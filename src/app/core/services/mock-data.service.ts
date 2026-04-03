@@ -21,7 +21,7 @@ export class MockDataService {
     },
     {
       id: 2,
-      name: 'Frappé Mocha',
+      name: 'Frappé Moka',
       category: 'Frappé',
       price: 65,
       image: 'https://cdn7.kiwilimon.com/recetaimagen/20073/640x640/12137.jpg.jpg',
