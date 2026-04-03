@@ -36,6 +36,6 @@ jobs:
           git config --global user.email "github-actions@github.com"
 
       - name: Deploy
-        run: npx angular-cli-ghpages --dir=dist/cafe_mokatta_frontend/browser
+        run: npx angular-cli-ghpages --dir=dist/cafe_mokatta_frontend
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
