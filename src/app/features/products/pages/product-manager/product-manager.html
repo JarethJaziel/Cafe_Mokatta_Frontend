@@ -1,0 +1,159 @@
+<div class="container-fluid">
+
+    <h2 class="fw-bold mb-4">Product Manager</h2>
+
+    <div class="row g-4">
+
+        <!-- LEFT: TABLE -->
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <h5 class="mb-0">Product List</h5>
+
+                        <button class="btn btn-primary btn-sm">
+                            Add Category
+                        </button>
+                    </div>
+                    <input class="form-control mb-3" placeholder="Buscar producto...">
+                    <!-- TABLE -->
+                    <table class="table align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @for (p of products; track p.id) {
+                            <tr>
+
+                                <td>
+                                    <img [src]="p.image" width="40" class="rounded">
+                                </td>
+
+                                <td>{{ p.name }}</td>
+                                <td>{{ p.category }}</td>
+                                <td>${{ p.price }}</td>
+
+                                <td>
+                                    <span class="badge" [ngClass]="{
+                        'bg-success': p.stock > 20,
+                        'bg-warning': p.stock <= 20 && p.stock > 5,
+                        'bg-danger': p.stock <= 5
+                      }">
+                                        {{ p.stock }}
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <button class="btn btn-sm btn-outline-secondary me-1" (click)="edit(p)">
+                                        Edit
+                                    </button>
+
+                                    <button class="btn btn-sm btn-outline-danger" (click)="delete(p.id!)">
+                                        Delete
+                                    </button>
+                                </td>
+
+                            </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+
+            <!-- CHART -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-body">
+                    <h5>Popular Categories</h5>
+                    <div style="height: 150px; background: #f5f6fa;" class="rounded"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT: FORM -->
+        <div class="col-lg-4">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <h5 class="mb-3">Add / Edit Product</h5>
+
+                    <!-- IMAGE -->
+                    <div class="mb-3">
+                        <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*"
+                            style="display: none">
+
+                        <div class="border rounded p-4 text-center text-muted custom-upload" (click)="fileInput.click()"
+                            style="cursor: pointer;">
+
+                            <img *ngIf="imagePreview" [src]="imagePreview" class="img-fluid mb-2"
+                                style="max-height: 150px;">
+                            <div *ngIf="!imagePreview">
+                                <i class="bi bi-cloud-arrow-up fs-2 d-block"></i>
+                                Upload Image
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NAME -->
+                    <div class="mb-3">
+                        <label class="form-label">Name</label>
+                        <input class="form-control" [(ngModel)]="form.name">
+                    </div>
+
+                    <!-- CATEGORY -->
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select class="form-select" [(ngModel)]="form.category">
+                            <option>Café</option>
+                            <option>Frappé</option>
+                            <option>Postre</option>
+                        </select>
+                    </div>
+
+                    <!-- PRICE -->
+                    <div class="mb-3">
+                        <label class="form-label">Price</label>
+                        <input type="number" class="form-control" [(ngModel)]="form.price">
+                    </div>
+
+                    <!-- STOCK -->
+                    <div class="mb-3">
+                        <label class="form-label">Stock</label>
+                        <input type="number" class="form-control" [(ngModel)]="form.stock">
+                    </div>
+
+                    <!-- BUTTONS -->
+                    <button class="btn btn-primary w-100 mb-2" (click)="save()">
+                        Save Product
+                    </button>
+
+                    <button class="btn btn-outline-secondary w-100" (click)="resetForm()">
+                        Cancel
+                    </button>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

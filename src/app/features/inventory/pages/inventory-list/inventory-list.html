@@ -1,0 +1,161 @@
+<div class="container-fluid">
+
+    <!-- HEADER -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Inventory</h2>
+
+        <input class="form-control w-auto" style="min-width: 250px;" placeholder="Search inventory..."
+            [(ngModel)]="search">
+    </div>
+
+    <!-- STATS -->
+    <div class="row g-3 mb-4">
+
+        <div class="col-md-4">
+            <div class="card p-3 shadow-sm">
+                <small>Total Inventory</small>
+                <h4>{{ items.length }}</h4>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3 shadow-sm">
+                <small>Low stock</small>
+                <h4 class="text-warning">
+                    {{ items.filter(i => i.stock <= i.minStock).length }} </h4>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card p-3 shadow-sm">
+                <small>Critical</small>
+                <h4 class="text-danger">
+                    {{ items.filter(i => i.stock <= i.minStock * 0.5).length }} </h4>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row g-4">
+
+        <!-- TABLE -->
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <table class="table align-middle">
+
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Unit</th>
+                                <th>Stock</th>
+                                <th>Status</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @for (i of items
+                            .filter(x => x.name.toLowerCase().includes(search?.toLowerCase() || ''));
+                            track i.id) {
+
+                            <tr>
+
+                                <td class="fw-semibold">{{ i.name }}</td>
+
+                                <td>{{ i.unit }}</td>
+
+                                <td>{{ i.stock }}</td>
+
+                                <!-- STATUS -->
+                                <td>
+                                    <span class="badge" [class.bg-danger]="i.stock <= i.minStock * 0.5"
+                                        [class.bg-warning]="i.stock <= i.minStock && i.stock > i.minStock * 0.5"
+                                        [class.bg-success]="i.stock > i.minStock">
+
+                                        @if (i.stock <= i.minStock * 0.5) { Critical } @else if (i.stock <=i.minStock) {
+                                            Low } @else { OK } </span>
+                                </td>
+
+                                <!-- ACTIONS -->
+                                <td>
+
+                                    <button class="btn btn-sm btn-outline-secondary me-1" (click)="edit(i)">
+                                        Edit
+                                    </button>
+
+                                    <button class="btn btn-sm btn-outline-danger" (click)="delete(i.id!)">
+                                        Delete
+                                    </button>
+
+                                </td>
+
+                            </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FORM -->
+        <div class="col-lg-4">
+
+            <div class="card shadow-sm">
+
+                <div class="card-body">
+
+                    <h5 class="mb-3">
+                        {{ editing ? 'Edit Inventory' : 'New Inventory' }}
+                    </h5>
+
+                    <!-- NAME -->
+                    <div class="mb-2">
+                        <label class="form-label">Name</label>
+                        <input class="form-control" [(ngModel)]="form.name">
+                    </div>
+
+                    <!-- UNIT -->
+                    <div class="mb-2">
+                        <label class="form-label">Unit</label>
+                        <input class="form-control" placeholder="g, ml, units" [(ngModel)]="form.unit">
+                    </div>
+
+                    <!-- STOCK -->
+                    <div class="mb-2">
+                        <label class="form-label">Stock</label>
+                        <input type="number" class="form-control" [(ngModel)]="form.stock">
+                    </div>
+
+                    <!-- MIN STOCK -->
+                    <div class="mb-3">
+                        <label class="form-label">Minimum Stock</label>
+                        <input type="number" class="form-control" [(ngModel)]="form.minStock">
+                    </div>
+
+                    <!-- BUTTONS -->
+                    <button class="btn btn-primary w-100 mb-2" (click)="save()">
+                        {{ editing ? 'Update' : 'Save' }}
+                    </button>
+
+                    <button class="btn btn-outline-secondary w-100" (click)="resetForm()">
+                        Cancel
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

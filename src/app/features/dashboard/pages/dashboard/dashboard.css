@@ -1,0 +1,17 @@
+.metric-card {
+    transition: all 0.2s ease;
+    border-radius: 12px;
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+}
+
+.card {
+    border-radius: 12px;
+}
+
+/* Fondo tipo dashboard */
+body {
+    background-color: #f5f6fa;
+}

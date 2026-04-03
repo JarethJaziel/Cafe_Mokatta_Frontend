@@ -1,0 +1,101 @@
+<div class="container-fluid">
+
+    <h2 class="fw-bold mb-4">Order POS</h2>
+
+    <div class="row g-4">
+
+        <!-- LEFT -->
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm p-3">
+
+                <h5>New Order - Point of Sale (POS)</h5>
+
+                <!-- SEARCH -->
+                <input class="form-control my-3" placeholder="Search by products">
+
+                <!-- PRODUCTS -->
+                <div class="row g-3">
+
+                    @for (p of products; track p.id) {
+                    <div class="col-6 col-md-4">
+
+                        <div class="card h-100 text-center p-2">
+
+                            <img [src]="p.image" height="80" style="object-fit: cover;">
+
+                            <div class="mt-2 fw-bold">
+                                {{ p.name }}
+                            </div>
+
+                            <div>${{ p.price }}</div>
+
+                            <button class="btn btn-outline-primary btn-sm mt-2" (click)="addToCart(p)">
+                                +
+                            </button>
+
+                        </div>
+
+                    </div>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="col-lg-4">
+
+            <div class="card shadow-sm p-3">
+
+                <h5>Shopping Cart</h5>
+
+                <div class="mb-3">
+
+                    @for (item of cart; track item.productId) {
+                    <div class="d-flex justify-content-between border-bottom py-2">
+
+                        <div>
+                            {{ item.quantity }}x {{ item.name }}
+                        </div>
+
+                        <div>
+                            ${{ item.price * item.quantity }}
+                        </div>
+
+                    </div>
+                    }
+
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <strong>Subtotal:</strong>
+                    <span>${{ subtotal }}</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-3">
+                    <strong>Total:</strong>
+                    <span>${{ subtotal }}</span>
+                </div>
+
+                <button class="btn btn-primary w-100 mb-2" (click)="processPayment()">
+                    Process Payment
+                </button>
+
+                <button class="btn btn-primary w-100 mb-2" (click)="sendToKitchen()">
+                    Send to Kitchen
+                </button>
+
+                <button class="btn btn-outline-secondary w-100" (click)="clearCart()">
+                    Clear
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
