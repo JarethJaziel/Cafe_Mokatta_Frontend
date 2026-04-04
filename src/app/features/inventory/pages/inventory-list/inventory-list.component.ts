@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './inventory-list.css',
 })
 export class InventoryList {
-  private service = inject(InventoryService);
+  private readonly service = inject(InventoryService);
 
   items: InventoryItem[] = [];
 
@@ -39,9 +39,14 @@ export class InventoryList {
     this.form = { ...item };
     this.editing = true;
     this.selectedId = item.id;
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   save() {
+
+    if (!this.form.name || !this.form.unit) return;
+
     if (this.editing && this.selectedId) {
       this.service.update(this.selectedId, this.form)
         .subscribe(() => {

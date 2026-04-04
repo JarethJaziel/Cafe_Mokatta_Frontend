@@ -1,15 +1,21 @@
-<div class="d-flex">
+<div class="d-flex flex-column vh-100">
 
-  <!-- Sidebar -->
-  <app-sidebar></app-sidebar>
+  <!-- HEADER -->
+  <app-header></app-header>
 
-  <!-- Content -->
-  <div class="flex-grow-1">
+  <!-- BODY -->
+  <div class="d-flex flex-grow-1">
 
-    <app-header></app-header>
+    <!-- SIDEBAR -->
+    <div class="sidebar-container">
+      <app-sidebar></app-sidebar>
+    </div>
 
-    <div class="p-4">
-      <router-outlet></router-outlet>
+    <!-- CONTENT -->
+    <div class="flex-grow-1 bg-light overflow-auto">
+      <div class="p-4">
+        <router-outlet></router-outlet>
+      </div>
     </div>
 
   </div>

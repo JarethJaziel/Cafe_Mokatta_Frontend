@@ -23,7 +23,7 @@ export const routes: Routes = [
                 .then(m => m.InventoryList)
     },
     {
-        path: 'order-pos',
+        path: 'order',
         loadComponent: () =>
             import('./features/orders/pages/order-pos/order-pos.component')
                 .then(m => m.OrderPos)
