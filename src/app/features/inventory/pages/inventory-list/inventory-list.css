@@ -1,0 +1,44 @@
+/* Tipografía y Etiquetas */
+.metric-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.field-label {
+    font-size: 0.85rem;
+}
+
+/* Animaciones en Botones */
+.quick-btn {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.quick-btn:hover {
+    transform: translateY(-2px);
+}
+
+.quick-btn:active {
+    transform: scale(0.97);
+}
+
+/* Inputs con estilo moderno */
+.form-control-custom {
+    background-color: #f8f9fa;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+}
+
+.form-control-custom:focus {
+    background-color: #fff;
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+}
+
+/* Cards de estadísticas */
+.stat-card {
+    border-left: 4px solid #0d6efd;
+}
+
+.stat-card.low-stock { border-left-color: #ffc107; }
+.stat-card.critical { border-left-color: #dc3545; }

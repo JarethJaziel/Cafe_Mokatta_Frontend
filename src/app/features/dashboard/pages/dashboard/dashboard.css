@@ -1,17 +1,56 @@
+body {
+    background-color: #f0f4f8;
+}
+
+/* Label reutilizable */
+.metric-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+}
+
+/* Hover con elevación en metric cards */
 .metric-card {
-    transition: all 0.2s ease;
-    border-radius: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: default;
 }
 
 .metric-card:hover {
     transform: translateY(-5px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1) !important;
 }
 
-.card {
-    border-radius: 12px;
+/* Hover quick buttons */
+.quick-btn {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-/* Fondo tipo dashboard */
-body {
-    background-color: #f5f6fa;
+.quick-btn:hover {
+    transform: translateY(-2px);
+}
+
+.quick-btn:active {
+    transform: scale(0.97);
+}
+
+.status-pending {
+    background-color: #fef3cd;
+    color: #7d5a00;
+}
+
+.status-en-preparación,
+.status-preparando {
+    background-color: #cce5ff;
+    color: #003f7f;
+}
+
+.status-lista,
+.status-listo {
+    background-color: #d4edda;
+    color: #1a5c31;
+}
+
+.status-entregado,
+.status-completado {
+    background-color: #e2e8f0;
+    color: #4a5568;
 }

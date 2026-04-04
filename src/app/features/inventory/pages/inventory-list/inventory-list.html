@@ -1,161 +1,133 @@
-<div class="container-fluid">
+<div class="container-fluid px-4 py-4">
 
-    <!-- HEADER -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold">Inventory</h2>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold text-dark mb-0">Inventory</h2>
+      <small class="text-muted">Control of supplies and raw materials</small>
+    </div>
+    <div class="d-flex gap-2">
+      <input class="form-control border-0 shadow-sm rounded-3 bg-light" style="min-width: 280px;"
+        placeholder="Search inventory..." [(ngModel)]="search">
+    </div>
+  </div>
 
-        <input class="form-control w-auto" style="min-width: 250px;" placeholder="Search inventory..."
-            [(ngModel)]="search">
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm rounded-3 stat-card p-3">
+        <h6 class="text-muted metric-label mb-1">Total Supplies</h6>
+        <h3 class="fw-bold mb-0">{{ items.length }}</h3>
+      </div>
     </div>
 
-    <!-- STATS -->
-    <div class="row g-3 mb-4">
-
-        <div class="col-md-4">
-            <div class="card p-3 shadow-sm">
-                <small>Total Inventory</small>
-                <h4>{{ items.length }}</h4>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card p-3 shadow-sm">
-                <small>Low stock</small>
-                <h4 class="text-warning">
-                    {{ items.filter(i => i.stock <= i.minStock).length }} </h4>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card p-3 shadow-sm">
-                <small>Critical</small>
-                <h4 class="text-danger">
-                    {{ items.filter(i => i.stock <= i.minStock * 0.5).length }} </h4>
-            </div>
-        </div>
-
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm rounded-3 stat-card low-stock p-3">
+        <h6 class="text-muted metric-label mb-1">Low Stock</h6>
+        <h3 class="fw-bold mb-0 text-warning">
+          {{ items.filter(i => i.stock <= i.minStock && i.stock> i.minStock * 0.5).length }}
+        </h3>
+      </div>
     </div>
 
-    <div class="row g-4">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm rounded-3 stat-card critical p-3">
+        <h6 class="text-muted metric-label mb-1">Critical / Out of Stock</h6>
+        <h3 class="fw-bold mb-0 text-danger">
+          {{ items.filter(i => i.stock <= i.minStock * 0.5).length }} </h3>
+      </div>
+    </div>
+  </div>
 
-        <!-- TABLE -->
-        <div class="col-lg-8">
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-body p-3">
+          <h6 class="fw-bold text-uppercase text-muted mb-3 metric-label">Supplies List</h6>
 
-            <div class="card shadow-sm">
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="border-0 metric-label text-muted">Supply</th>
+                <th class="border-0 metric-label text-muted">Unit</th>
+                <th class="border-0 metric-label text-muted">Quantity</th>
+                <th class="border-0 metric-label text-muted text-center">Status</th>
+                <th class="border-0"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (i of items.filter(x => x.name.toLowerCase().includes(search?.toLowerCase() || '')); track i.id) {
+              <tr>
+                <td class="fw-semibold">{{ i.name }}</td>
+                <td><span class="text-muted">{{ i.unit }}</span></td>
+                <td class="fw-bold">{{ i.stock }}</td>
+                <td class="text-center">
+                  <span class="badge rounded-pill px-3" [ngClass]="{
+                    'bg-danger-subtle text-danger': i.stock <= i.minStock * 0.5,
+                    'bg-warning-subtle text-warning': i.stock <= i.minStock && i.stock > i.minStock * 0.5,
+                    'bg-success-subtle text-success': i.stock > i.minStock
+                  }">
+                    @if (i.stock <= i.minStock * 0.5) { Critical } @else if (i.stock <=i.minStock) { Low } @else {
+                      Optimal } </span>
+                </td>
+                <td class="text-end">
+                  <div class="d-flex justify-content-end gap-1">
 
-                <div class="card-body">
-
-                    <table class="table align-middle">
-
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Unit</th>
-                                <th>Stock</th>
-                                <th>Status</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            @for (i of items
-                            .filter(x => x.name.toLowerCase().includes(search?.toLowerCase() || ''));
-                            track i.id) {
-
-                            <tr>
-
-                                <td class="fw-semibold">{{ i.name }}</td>
-
-                                <td>{{ i.unit }}</td>
-
-                                <td>{{ i.stock }}</td>
-
-                                <!-- STATUS -->
-                                <td>
-                                    <span class="badge" [class.bg-danger]="i.stock <= i.minStock * 0.5"
-                                        [class.bg-warning]="i.stock <= i.minStock && i.stock > i.minStock * 0.5"
-                                        [class.bg-success]="i.stock > i.minStock">
-
-                                        @if (i.stock <= i.minStock * 0.5) { Critical } @else if (i.stock <=i.minStock) {
-                                            Low } @else { OK } </span>
-                                </td>
-
-                                <!-- ACTIONS -->
-                                <td>
-
-                                    <button class="btn btn-sm btn-outline-secondary me-1" (click)="edit(i)">
-                                        Edit
-                                    </button>
-
-                                    <button class="btn btn-sm btn-outline-danger" (click)="delete(i.id!)">
-                                        Delete
-                                    </button>
-
-                                </td>
-
-                            </tr>
-                            }
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-            </div>
-
-        </div>
-
-        <!-- FORM -->
-        <div class="col-lg-4">
-
-            <div class="card shadow-sm">
-
-                <div class="card-body">
-
-                    <h5 class="mb-3">
-                        {{ editing ? 'Edit Inventory' : 'New Inventory' }}
-                    </h5>
-
-                    <!-- NAME -->
-                    <div class="mb-2">
-                        <label class="form-label">Name</label>
-                        <input class="form-control" [(ngModel)]="form.name">
-                    </div>
-
-                    <!-- UNIT -->
-                    <div class="mb-2">
-                        <label class="form-label">Unit</label>
-                        <input class="form-control" placeholder="g, ml, units" [(ngModel)]="form.unit">
-                    </div>
-
-                    <!-- STOCK -->
-                    <div class="mb-2">
-                        <label class="form-label">Stock</label>
-                        <input type="number" class="form-control" [(ngModel)]="form.stock">
-                    </div>
-
-                    <!-- MIN STOCK -->
-                    <div class="mb-3">
-                        <label class="form-label">Minimum Stock</label>
-                        <input type="number" class="form-control" [(ngModel)]="form.minStock">
-                    </div>
-
-                    <!-- BUTTONS -->
-                    <button class="btn btn-primary w-100 mb-2" (click)="save()">
-                        {{ editing ? 'Update' : 'Save' }}
+                    <button class="btn btn-sm btn-light rounded-2" (click)="edit(i)">
+                      <i class="bi bi-pencil text-primary"></i>
                     </button>
 
-                    <button class="btn btn-outline-secondary w-100" (click)="resetForm()">
-                        Cancel
+                    <button class="btn btn-sm btn-light rounded-2" (click)="delete(i.id!)">
+                      <i class="bi bi-trash text-danger"></i>
                     </button>
 
-                </div>
-
-            </div>
-
+                  </div>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
         </div>
-
+      </div>
     </div>
 
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-body p-4">
+          <h6 class="fw-bold text-dark mb-4">
+            {{ editing ? 'Edit Supply' : 'New Supply' }}
+          </h6>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold field-label">Supply Name</label>
+            <input class="form-control rounded-3 form-control-custom" placeholder="e.g., Coffee Beans"
+              [(ngModel)]="form.name">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold field-label">Unit of Measure</label>
+            <input class="form-control rounded-3 form-control-custom" placeholder="g, ml, pcs..."
+              [(ngModel)]="form.unit">
+          </div>
+
+          <div class="row mb-4">
+            <div class="col-6">
+              <label class="form-label fw-semibold field-label">Current Stock</label>
+              <input type="number" class="form-control rounded-3 form-control-custom" [(ngModel)]="form.stock">
+            </div>
+            <div class="col-6">
+              <label class="form-label fw-semibold field-label">Minimum</label>
+              <input type="number" class="form-control rounded-3 form-control-custom" [(ngModel)]="form.minStock">
+            </div>
+          </div>
+
+          <button class="btn btn-primary w-100 py-3 rounded-3 fw-semibold shadow-sm quick-btn mb-2" (click)="save()">
+            {{ editing ? 'Update Supply' : 'Register Supply' }}
+          </button>
+
+          <button class="btn btn-link w-100 text-decoration-none text-muted fw-semibold" (click)="resetForm()">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

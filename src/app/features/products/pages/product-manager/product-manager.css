@@ -1,0 +1,38 @@
+.metric-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+}
+
+.field-label {
+    font-size: 0.85rem;
+}
+
+.quick-btn {
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.quick-btn:hover {
+    transform: translateY(-2px);
+}
+
+.quick-btn:active {
+    transform: scale(0.97);
+}
+
+.product-thumb {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+}
+
+.image-upload-zone {
+    border: 2px dashed #dee2e6;
+    height: 120px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.image-upload-zone:hover {
+    border-color: #0d6efd;
+    background-color: #f0f6ff;
+}

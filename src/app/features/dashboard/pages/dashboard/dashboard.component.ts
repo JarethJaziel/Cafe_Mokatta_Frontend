@@ -1,11 +1,13 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { DashboardService } from '../../services/dashboard.service';
 import { DashboardOrder, Stat, TopProduct } from '../../../../core/models/Dashboard.model';
+import { LowerCasePipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [],
+  imports: [LowerCasePipe, RouterLink],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })

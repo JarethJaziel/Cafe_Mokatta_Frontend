@@ -1,33 +1,53 @@
 <div class="p-3">
+    <!-- Menu Card -->
+    <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-body p-2">
 
-    <span class="fs-4 fw-bold mb-3 d-block">Menú</span>
+            <ul class="nav nav-pills flex-column gap-1">
 
-    <ul class="nav nav-pills flex-column gap-2">
+                <li>
+                    <a routerLink="/dashboard" routerLinkActive="active"
+                        class="nav-link d-flex align-items-center gap-2 rounded-3 px-3 py-2">
 
-        <li>
-            <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
-                Dashboard
-            </a>
-        </li>
+                        <i class="bi bi-speedometer2"></i>
+                        <span>Dashboard</span>
 
-        <li>
-            <a routerLink="/products" routerLinkActive="active" class="nav-link">
-                Products
-            </a>
-        </li>
+                    </a>
+                </li>
 
-        <li>
-            <a routerLink="/inventory" routerLinkActive="active" class="nav-link">
-                Inventory
-            </a>
-        </li>
+                <li>
+                    <a routerLink="/products" routerLinkActive="active"
+                        class="nav-link d-flex align-items-center gap-2 rounded-3 px-3 py-2">
 
-        <li>
-            <a routerLink="/order-pos" routerLinkActive="active" class="nav-link">
-                Order
-            </a>
-        </li>
+                        <i class="bi bi-box-seam"></i>
+                        <span>Products</span>
 
-    </ul>
+                    </a>
+                </li>
+
+                <li>
+                    <a routerLink="/inventory" routerLinkActive="active"
+                        class="nav-link d-flex align-items-center gap-2 rounded-3 px-3 py-2">
+
+                        <i class="bi bi-clipboard-data"></i>
+                        <span>Inventory</span>
+
+                    </a>
+                </li>
+
+                <li>
+                    <a routerLink="/order" routerLinkActive="active"
+                        class="nav-link d-flex align-items-center gap-2 rounded-3 px-3 py-2">
+
+                        <i class="bi bi-cart3"></i>
+                        <span>Order</span>
+
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+    </div>
 
 </div>

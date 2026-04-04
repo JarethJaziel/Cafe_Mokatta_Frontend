@@ -101,4 +101,20 @@ export class ProductManager implements OnInit {
     this.selectedId = undefined;
   }
 
+  get categories() {
+  const total = this.products.length;
+  if (total === 0) return [];
+
+  const counts = this.products.reduce((acc: any, p) => {
+    acc[p.category] = (acc[p.category] || 0) + 1;
+    return acc;
+  }, {});
+
+  return Object.keys(counts).map(key => ({
+    name: key,
+    count: counts[key],
+    percentage: (counts[key] / total) * 100
+  }));
+}
+
 }

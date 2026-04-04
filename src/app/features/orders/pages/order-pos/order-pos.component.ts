@@ -23,8 +23,8 @@ export class OrderPos {
   }
 
   // ================= ADD =================
-  addToCart(product: Product) {
-    const item = this.cart.find(i => i.productId === product.id);
+  addToCart(product: any) {
+    const item = this.cart.find(i => i.productId === (product.id || product.productId));
 
     if (item) {
       item.quantity++;
@@ -36,6 +36,23 @@ export class OrderPos {
         quantity: 1
       });
     }
+  }
+
+  decreaseQty(product: any) {
+    const item = this.cart.find(i => i.productId === (product.id || product.productId));
+
+    if (!item) return;
+
+    item.quantity--;
+
+    if (item.quantity === 0) {
+      // Filtramos para eliminarlo si llega a cero
+      this.cart = this.cart.filter(i => i.productId !== (product.id || product.productId));
+    }
+  }
+  getQty(productId: number): number {
+    const item = this.cart.find(i => i.productId === productId);
+    return item ? item.quantity : 0;
   }
 
   // ================= TOTAL =================

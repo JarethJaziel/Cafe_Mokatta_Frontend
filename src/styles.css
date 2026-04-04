@@ -1,1 +1,50 @@
-/* You can add global styles to this file, and also import other style files */
+app-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* Links base */
+.nav-link {
+    color: #6c757d;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+/* Hover */
+.nav-link:hover {
+    background-color: #f8f9fa;
+    color: #0d6efd;
+}
+
+/* Active (Angular router) */
+.nav-link.active {
+    background: linear-gradient(135deg, #0d6efd, #4dabf7);
+    color: white !important;
+    box-shadow: 0 4px 10px rgba(13, 110, 253, 0.25);
+}
+
+/* Iconos */
+.nav-link i {
+    font-size: 1.1rem;
+}
+
+/* Sidebar fijo debajo del header */
+.sidebar-container {
+    width: 250px;
+    background-color: #fff;
+    border-right: 1px solid #eee;
+
+    position: sticky;
+    top: 70px;
+    /* altura del header */
+    height: calc(100vh - 70px);
+
+    overflow-y: auto;
+}
+
+
+/* Opcional: fondo general */
+body {
+    background-color: #f8f9fa;
+}
