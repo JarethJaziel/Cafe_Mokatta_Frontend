@@ -11,7 +11,7 @@ export class InventoryService {
 
   private readonly api = inject(MokkatAPIService);
   private readonly mock = inject(MockDataService);
-  private readonly useMock = true;
+  private readonly useMock = false;
 
 
   getItems() {

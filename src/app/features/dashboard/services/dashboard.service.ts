@@ -11,7 +11,7 @@ export class DashboardService {
 
   private readonly api = inject(MokkatAPIService);
   private readonly mock = inject(MockDataService);
-  private readonly useMock = true;
+  private readonly useMock = false;
 
 
   getStats() {

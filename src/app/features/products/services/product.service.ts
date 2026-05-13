@@ -12,7 +12,7 @@ export class ProductService {
   private readonly mock = inject(MockDataService);
   private readonly api = inject(MokkatAPIService);
 
-  private readonly useMock = true; //Cambiar cuando haya backend uwu
+  private readonly useMock = false; //Cambiar cuando haya backend uwu
 
   getProducts() {
     if (this.useMock) {
