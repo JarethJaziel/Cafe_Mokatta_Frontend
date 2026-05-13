@@ -4,6 +4,13 @@ export interface Stat {
     change: string;
 }
 
+export interface TodayDashboardDTO {
+    totalRevenue: number;
+    ordersCount: number;
+    cashTotal: number;
+    cardTotal: number;
+}
+
 export interface DashboardOrder {
     id: number;
     customer: string;
@@ -12,7 +19,7 @@ export interface DashboardOrder {
 }
 
 export interface TopProduct {
-    id: number;
-    name: string;
-    sales: number;
+    productId: number;
+    productName: string;
+    quantitySold: number;
 }
