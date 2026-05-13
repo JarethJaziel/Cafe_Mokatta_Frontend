@@ -15,6 +15,7 @@ export class ProductManager implements OnInit {
   private readonly productService = inject(ProductService);
 
   products: Product[] = [];
+  categoriesList: any[] = [];
 
   form: Product = this.emptyForm();
 
@@ -23,15 +24,17 @@ export class ProductManager implements OnInit {
 
   ngOnInit() {
     this.loadProducts();
+    this.loadCategories();
   }
 
   emptyForm(): Product {
     return {
       id: 0,
       name: '',
-      category: '',
-      price: 0,
-      stock: 0,
+      category: { id: 0, name: '' },
+      categoryId: 0,
+      unitPrice: 0,
+      available: true,
       image: ''
     };
   }
@@ -62,6 +65,11 @@ export class ProductManager implements OnInit {
       .subscribe(data => this.products = data);
   }
 
+  loadCategories() {
+    this.productService.getCategories()
+      .subscribe(data => this.categoriesList = data);
+  }
+
   // ================= SAVE =================
   save() {
 
@@ -83,7 +91,7 @@ export class ProductManager implements OnInit {
 
   // ================= EDIT =================
   edit(product: Product) {
-    this.form = { ...product };
+    this.form = { ...product, categoryId: product.category?.id };
     this.editing = true;
     this.selectedId = product.id;
   }
@@ -106,7 +114,8 @@ export class ProductManager implements OnInit {
   if (total === 0) return [];
 
   const counts = this.products.reduce((acc: any, p) => {
-    acc[p.category] = (acc[p.category] || 0) + 1;
+    const catName = p.category?.name || 'Uncategorized';
+    acc[catName] = (acc[catName] || 0) + 1;
     return acc;
   }, {});
 

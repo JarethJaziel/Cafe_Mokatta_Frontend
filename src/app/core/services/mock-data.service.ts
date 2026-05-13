@@ -14,11 +14,12 @@ export class MockDataService {
     {
       id: 1,
       name: 'Café Americano',
-      category: 'Café',
-      price: 35,
+      category: {id: 1, name: 'Café'},
+      unitPrice: 35,
       image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQaK_3CPUX1YgGZtv-SPWe_h-OfNijw2a3oUw&s',
-      stock: 20
-    },
+      available: true
+    }
+    /*,
     {
       id: 2,
       name: 'Frappé Moka',
@@ -42,8 +43,10 @@ export class MockDataService {
       price: 50,
       image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpS6yaJcvttjlTPYohqV_7Kgc-WjBUwY8iYw&s',
       stock: 15
-    },
+    },*/
   ];
+
+  
 
   // ================= DASHBOARD =================
   private readonly stats: Stat[] = [
@@ -60,16 +63,19 @@ export class MockDataService {
   ];
 
   private readonly topProducts: TopProduct[] = [
+    /*
     { id: 1, name: 'Café Americano', sales: 120 },
     { id: 2, name: 'Frappé', sales: 90 },
     { id: 3, name: 'Capuccino', sales: 70 }
+    */
   ];
 
   // ================= INVENTORY =================
   private inventory: InventoryItem[] = [
+    /*
     { id: 1, name: 'Leche', unit: 'ml', stock: 2000, minStock: 500 },
     { id: 2, name: 'Café Molido', unit: 'g', stock: 1000, minStock: 300 },
-    { id: 3, name: 'Azúcar', unit: 'g', stock: 800, minStock: 200 }
+    { id: 3, name: 'Azúcar', unit: 'g', stock: 800, minStock: 200 }*/
   ];
 
   // ================= ORDERS =================
@@ -129,7 +135,7 @@ export class MockDataService {
 
   createOrder(order: Order) {
     order.id = Date.now();
-    order.createdAt = new Date();
+    //order.createdAt = new Date();
     this.orders.push(order);
     return order;
   }
@@ -137,6 +143,5 @@ export class MockDataService {
   getOrders() {
     return [...this.orders];
   }
-
 
 }

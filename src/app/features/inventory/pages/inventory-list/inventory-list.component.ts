@@ -18,8 +18,8 @@ export class InventoryList {
   form: InventoryItem = {
     name: '',
     unit: '',
-    stock: 0,
-    minStock: 0
+    quantityInStock: 0,
+    reorderLevel: 0
   };
 
   ngOnInit() {
@@ -66,8 +66,8 @@ export class InventoryList {
     this.form = {
       name: '',
       unit: '',
-      stock: 0,
-      minStock: 0
+      quantityInStock: 0,
+      reorderLevel: 0
     };
     this.editing = false;
     this.selectedId = undefined;

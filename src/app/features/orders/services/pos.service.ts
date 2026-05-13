@@ -16,15 +16,19 @@ export class PosService {
 
 
   createOrder(order: Order) {
-    if (this.useMock) return of(this.mock.createOrder(order));
-    return this.api.post('orders', order);
-  }
-
-  sendToKitchen(order: Order) {
     if (this.useMock) {
-      order.status = 'PREPARING';
       return of(this.mock.createOrder(order));
     }
-    return this.api.post('orders/kitchen', order);
+    
+    // El backend espera { paymentMethod, items: [{ productId, quantity }] }
+    const payload = {
+      paymentMethod: order.paymentMethod,
+      items: order.items.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity
+      }))
+    };
+    
+    return this.api.post('orders', payload);
   }
 }

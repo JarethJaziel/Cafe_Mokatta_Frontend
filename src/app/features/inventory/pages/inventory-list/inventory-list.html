@@ -23,7 +23,7 @@
       <div class="card border-0 shadow-sm rounded-3 stat-card low-stock p-3">
         <h6 class="text-muted metric-label mb-1">Low Stock</h6>
         <h3 class="fw-bold mb-0 text-warning">
-          {{ items.filter(i => i.stock <= i.minStock && i.stock> i.minStock * 0.5).length }}
+          {{ items.filter(i => i.quantityInStock <= i.reorderLevel && i.quantityInStock> i.reorderLevel * 0.5).length }}
         </h3>
       </div>
     </div>
@@ -32,7 +32,7 @@
       <div class="card border-0 shadow-sm rounded-3 stat-card critical p-3">
         <h6 class="text-muted metric-label mb-1">Critical / Out of Stock</h6>
         <h3 class="fw-bold mb-0 text-danger">
-          {{ items.filter(i => i.stock <= i.minStock * 0.5).length }} </h3>
+          {{ items.filter(i => i.quantityInStock <= i.reorderLevel * 0.5).length }} </h3>
       </div>
     </div>
   </div>
@@ -58,14 +58,14 @@
               <tr>
                 <td class="fw-semibold">{{ i.name }}</td>
                 <td><span class="text-muted">{{ i.unit }}</span></td>
-                <td class="fw-bold">{{ i.stock }}</td>
+                <td class="fw-bold">{{ i.quantityInStock }}</td>
                 <td class="text-center">
                   <span class="badge rounded-pill px-3" [ngClass]="{
-                    'bg-danger-subtle text-danger': i.stock <= i.minStock * 0.5,
-                    'bg-warning-subtle text-warning': i.stock <= i.minStock && i.stock > i.minStock * 0.5,
-                    'bg-success-subtle text-success': i.stock > i.minStock
+                    'bg-danger-subtle text-danger': i.quantityInStock <= i.reorderLevel * 0.5,
+                    'bg-warning-subtle text-warning': i.quantityInStock <= i.reorderLevel && i.quantityInStock > i.reorderLevel * 0.5,
+                    'bg-success-subtle text-success': i.quantityInStock > i.reorderLevel
                   }">
-                    @if (i.stock <= i.minStock * 0.5) { Critical } @else if (i.stock <=i.minStock) { Low } @else {
+                    @if (i.quantityInStock <= i.reorderLevel * 0.5) { Critical } @else if (i.quantityInStock <=i.reorderLevel) { Low } @else {
                       Optimal } </span>
                 </td>
                 <td class="text-end">
@@ -111,11 +111,11 @@
           <div class="row mb-4">
             <div class="col-6">
               <label class="form-label fw-semibold field-label">Current Stock</label>
-              <input type="number" class="form-control rounded-3 form-control-custom" [(ngModel)]="form.stock">
+              <input type="number" class="form-control rounded-3 form-control-custom" [(ngModel)]="form.quantityInStock">
             </div>
             <div class="col-6">
               <label class="form-label fw-semibold field-label">Minimum</label>
-              <input type="number" class="form-control rounded-3 form-control-custom" [(ngModel)]="form.minStock">
+              <input type="number" class="form-control rounded-3 form-control-custom" [(ngModel)]="form.reorderLevel">
             </div>
           </div>
 

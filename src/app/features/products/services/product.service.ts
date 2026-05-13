@@ -21,6 +21,13 @@ export class ProductService {
     return this.api.get<Product[]>('products');
   }
 
+  getCategories() {
+    if (this.useMock) {
+      return of([]); // Mock si es necesario
+    }
+    return this.api.get<any[]>('categories');
+  }
+
   getProduct(id: number) {
     if (this.useMock) {
       return of(this.mock.getProductById(id));
@@ -41,7 +48,7 @@ export class ProductService {
       console.log('MOCK UPDATE', product);
       return of(product);
     }
-    return this.api.put<Product>(`products/${id}`, product);
+    return this.api.patch<Product>(`products/${id}`, product);
   }
 
   deleteProduct(id: number) {

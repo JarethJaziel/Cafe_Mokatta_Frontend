@@ -31,7 +31,7 @@
                   {{ getQty(p.id) }}
                 </span>
                 }
-                <img (click)="addToCart(p)" [src]="p.image" class="product-img">
+                <img (click)="addToCart(p)" [src]="p.image" class="product-img" style="cursor: pointer;">
               </div>
               <div class="card-body p-3">
                 <div class="fw-bold text-dark text-truncate mb-1">{{ p.name }}</div>
@@ -48,7 +48,7 @@
                     </button>
 
                     <span class="text-primary fw-bold">
-                      ${{ p.price }}
+                      ${{ p.unitPrice }}
                     </span>
 
                     <button class="btn btn-sm btn-primary rounded-circle btn-plus"
@@ -62,7 +62,7 @@
 
                   <!-- MODO NORMAL -->
                   <span class="text-primary fw-bold">
-                    ${{ p.price }}
+                    ${{ p.unitPrice }}
                   </span>
 
                   }
@@ -138,25 +138,25 @@
               </div>
             </div>
 
-            <button class="btn btn-primary w-100 py-3 rounded-3 fw-bold shadow-sm mb-2 quick-btn"
-              (click)="processPayment()" [disabled]="cart.length === 0">
-              <i class="bi bi-credit-card me-2"></i> Checkout
-            </button>
-
-            <div class="row g-2">
+            <div class="row g-2 mb-2">
               <div class="col-6">
-                <button class="btn btn-outline-primary w-100 py-2 rounded-3 fw-semibold small" (click)="sendToKitchen()"
-                  [disabled]="cart.length === 0">
-                  <i class="bi bi-fire me-1"></i> Kitchen
+                <button class="btn btn-success w-100 py-3 rounded-3 fw-bold shadow-sm quick-btn"
+                  (click)="processPayment('CASH')" [disabled]="cart.length === 0">
+                  <i class="bi bi-cash me-2"></i> Cash
                 </button>
               </div>
               <div class="col-6">
-                <button class="btn btn-outline-danger w-100 py-2 rounded-3 fw-semibold small" (click)="clearCart()"
-                  [disabled]="cart.length === 0">
-                  <i class="bi bi-trash me-1"></i> Clear
+                <button class="btn btn-primary w-100 py-3 rounded-3 fw-bold shadow-sm quick-btn"
+                  (click)="processPayment('CARD')" [disabled]="cart.length === 0">
+                  <i class="bi bi-credit-card me-2"></i> Card
                 </button>
               </div>
             </div>
+
+            <button class="btn btn-outline-danger w-100 py-2 rounded-3 fw-semibold small mt-2" (click)="clearCart()"
+              [disabled]="cart.length === 0">
+              <i class="bi bi-trash me-1"></i> Clear Cart
+            </button>
 
           </div>
         </div>

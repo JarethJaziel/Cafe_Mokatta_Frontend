@@ -62,26 +62,19 @@ export class OrderPos {
   }
 
   // ================= ORDER =================
-  buildOrder(): Order {
+  buildOrder(method: 'CASH' | 'CARD'): Order {
     return {
-      createdAt: new Date(),
+      orderDate: new Date(),
       items: this.cart,
-      total: this.subtotal,
-      status: 'PENDING'
+      totalAmount: this.subtotal,
+      paymentMethod: method
     };
   }
 
-  processPayment() {
-    const order = this.buildOrder();
+  processPayment(method: 'CASH' | 'CARD') {
+    const order = this.buildOrder(method);
 
     this.posService.createOrder(order)
-      .subscribe(() => this.clearCart());
-  }
-
-  sendToKitchen() {
-    const order = this.buildOrder();
-
-    this.posService.sendToKitchen(order)
       .subscribe(() => this.clearCart());
   }
 
