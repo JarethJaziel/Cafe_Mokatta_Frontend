@@ -39,16 +39,16 @@
               @for (product of products; track product.id) {
               <tr>
                 <td>
-                  <img [src]="product.image" alt="{{ product.name }}"
+                  <img [src]="product.imageUrl || 'https://placehold.co/50x50?text=No+Img'" alt="{{ product.name }}"
                     class="rounded-2 product-thumb">
                 </td>
                 <td class="fw-semibold">{{ product.name }}</td>
                 <td>
                   <span class="badge bg-primary-subtle text-primary rounded-pill px-3">
-                    {{ product.category?.name }}
+                    {{ product.categoryName }}
                   </span>
                 </td>
-                <td class="fw-bold">${{ product.unitPrice }}</td>
+                <td class="fw-bold">${{ product.price }}</td>
                 <td class="text-center">
                   <div class="form-check form-switch d-flex justify-content-center">
                     <input class="form-check-input" type="checkbox" [checked]="product.available" disabled>

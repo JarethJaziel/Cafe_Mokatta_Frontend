@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Product } from '../../../../core/models/Product.model';
+import { ProductResponse, CreateProductRequest, UpdateProductRequest, CategoryResponse } from '../../../../core/models/Product.model';
 import { ProductService } from '../../services/product.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -14,51 +14,46 @@ export class ProductManager implements OnInit {
 
   private readonly productService = inject(ProductService);
 
-  products: Product[] = [];
-  categoriesList: any[] = [];
+  products: ProductResponse[] = [];
+  categoriesList: CategoryResponse[] = [];
 
-  form: Product = this.emptyForm();
+  form: CreateProductRequest & { imageUrl?: string } = this.emptyForm();
 
   editing = false;
-  selectedId?: number;
+  selectedId?: string;
 
   ngOnInit() {
     this.loadProducts();
     this.loadCategories();
   }
 
-  emptyForm(): Product {
+  emptyForm(): CreateProductRequest {
     return {
-      id: 0,
       name: '',
-      category: { id: 0, name: '' },
-      categoryId: 0,
-      unitPrice: 0,
-      available: true,
-      image: ''
+      description: '',
+      price: 0,
+      categoryId: '',
+      imageUrl: ''
     };
   }
 
-  // En tu .ts
+  // Previsualización de imagen
   imagePreview: string | ArrayBuffer | null = null;
 
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
 
     if (file) {
-      // 1. Guardar el archivo en tu objeto de formulario (para enviarlo al backend)
-      this.form.image = file;
-
-      // 2. Crear una previsualización para el usuario
+      // Crear previsualización para el usuario
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result;
+        // TODO: Implementar servicio de file upload y asignar URL devuelta
+        // this.form.imageUrl = uploadedUrl;
       };
       reader.readAsDataURL(file);
     }
   }
-
-
 
   loadProducts() {
     this.productService.getProducts()
@@ -72,9 +67,16 @@ export class ProductManager implements OnInit {
 
   // ================= SAVE =================
   save() {
-
     if (this.editing && this.selectedId) {
-      this.productService.updateProduct(this.selectedId, this.form)
+      const updatePayload: UpdateProductRequest = {
+        name: this.form.name || undefined,
+        description: this.form.description || undefined,
+        price: this.form.price || undefined,
+        categoryId: this.form.categoryId || undefined,
+        imageUrl: this.form.imageUrl || undefined
+      };
+
+      this.productService.updateProduct(this.selectedId, updatePayload)
         .subscribe(() => {
           this.resetForm();
           this.loadProducts();
@@ -90,15 +92,27 @@ export class ProductManager implements OnInit {
   }
 
   // ================= EDIT =================
-  edit(product: Product) {
-    this.form = { ...product, categoryId: product.category?.id };
+  edit(product: ProductResponse) {
+    this.form = {
+      name: product.name,
+      description: product.description,
+      price: product.price,
+      categoryId: product.categoryId,
+      imageUrl: product.imageUrl
+    };
     this.editing = true;
     this.selectedId = product.id;
+    this.imagePreview = product.imageUrl || null;
   }
 
-  // ================= DELETE =================
-  delete(id: number) {
-    this.productService.deleteProduct(id)
+  // ================= TOGGLE =================
+  toggleAvailable(id: string) {
+    this.productService.toggleAvailable(id)
+      .subscribe(() => this.loadProducts());
+  }
+
+  toggleActive(id: string) {
+    this.productService.toggleActive(id)
       .subscribe(() => this.loadProducts());
   }
 
@@ -107,23 +121,24 @@ export class ProductManager implements OnInit {
     this.form = this.emptyForm();
     this.editing = false;
     this.selectedId = undefined;
+    this.imagePreview = null;
   }
 
   get categories() {
-  const total = this.products.length;
-  if (total === 0) return [];
+    const total = this.products.length;
+    if (total === 0) return [];
 
-  const counts = this.products.reduce((acc: any, p) => {
-    const catName = p.category?.name || 'Uncategorized';
-    acc[catName] = (acc[catName] || 0) + 1;
-    return acc;
-  }, {});
+    const counts = this.products.reduce((acc: any, p) => {
+      const catName = p.categoryName || 'Uncategorized';
+      acc[catName] = (acc[catName] || 0) + 1;
+      return acc;
+    }, {});
 
-  return Object.keys(counts).map(key => ({
-    name: key,
-    count: counts[key],
-    percentage: (counts[key] / total) * 100
-  }));
-}
+    return Object.keys(counts).map(key => ({
+      name: key,
+      count: counts[key],
+      percentage: (counts[key] / total) * 100
+    }));
+  }
 
 }

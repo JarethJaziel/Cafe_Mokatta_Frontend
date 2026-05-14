@@ -34,25 +34,33 @@
                 <th class="text-muted fw-semibold border-0 metric-label">Category</th>
                 <th class="text-muted fw-semibold border-0 metric-label">Price</th>
                 <th class="text-muted fw-semibold border-0 metric-label text-center">Available</th>
+                <th class="text-muted fw-semibold border-0 metric-label text-center">Active</th>
                 <th class="border-0"></th>
               </tr>
             </thead>
             <tbody>
               @for (p of products; track p.id) {
-              <tr>
+              <tr [class.table-secondary]="!p.active">
                 <td>
-                  <img [src]="p.image" class="rounded-2 product-thumb">
+                  <img [src]="p.imageUrl || 'https://placehold.co/50x50?text=No+Img'" class="rounded-2 product-thumb">
                 </td>
                 <td class="fw-semibold">{{ p.name }}</td>
                 <td>
                   <span class="badge bg-primary-subtle text-primary rounded-pill px-3">
-                    {{ p.category?.name }}
+                    {{ p.categoryName }}
                   </span>
                 </td>
-                <td class="fw-bold">${{ p.unitPrice }}</td>
+                <td class="fw-bold">${{ p.price }}</td>
                 <td class="text-center">
                   <div class="form-check form-switch d-flex justify-content-center">
-                    <input class="form-check-input" type="checkbox" [checked]="p.available" disabled>
+                    <input class="form-check-input" type="checkbox" [checked]="p.available"
+                      (change)="toggleAvailable(p.id)">
+                  </div>
+                </td>
+                <td class="text-center">
+                  <div class="form-check form-switch d-flex justify-content-center">
+                    <input class="form-check-input" type="checkbox" [checked]="p.active"
+                      (change)="toggleActive(p.id)">
                   </div>
                 </td>
                 <td class="text-end">
@@ -113,17 +121,29 @@
             </ng-container>
           </div>
 
+          <!-- Image URL (fallback) -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold text-dark field-label">Image URL</label>
+            <input class="form-control rounded-3" placeholder="https://..." [(ngModel)]="form.imageUrl">
+          </div>
+
           <!-- Name -->
           <div class="mb-3">
             <label class="form-label fw-semibold text-dark field-label">Name</label>
             <input class="form-control rounded-3" placeholder="e.g. Café Americano" [(ngModel)]="form.name">
           </div>
 
+          <!-- Description -->
+          <div class="mb-3">
+            <label class="form-label fw-semibold text-dark field-label">Description</label>
+            <textarea class="form-control rounded-3" rows="2" placeholder="Product description..." [(ngModel)]="form.description"></textarea>
+          </div>
+
           <!-- Category -->
           <div class="mb-3">
             <label class="form-label fw-semibold text-dark field-label">Category</label>
             <select class="form-select rounded-3" [(ngModel)]="form.categoryId">
-              <option [value]="0" disabled>Select category</option>
+              <option value="" disabled>Select category</option>
               @for (cat of categoriesList; track cat.id) {
                 <option [value]="cat.id">{{ cat.name }}</option>
               }
@@ -136,15 +156,7 @@
             <div class="input-group">
               <span class="input-group-text bg-light border-end-0 rounded-start-3">$</span>
               <input type="number" class="form-control border-start-0 rounded-end-3"
-                placeholder="0.00" [(ngModel)]="form.unitPrice">
-            </div>
-          </div>
-
-          <!-- Availability -->
-          <div class="mb-4">
-            <div class="form-check form-switch mt-2">
-              <input class="form-check-input" type="checkbox" id="availableSwitch" [(ngModel)]="form.available">
-              <label class="form-check-label fw-semibold text-dark" for="availableSwitch">Available for Sale</label>
+                placeholder="0.00" [(ngModel)]="form.price">
             </div>
           </div>
 

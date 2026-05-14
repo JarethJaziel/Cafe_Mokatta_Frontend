@@ -1,6 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { DashboardService } from '../../services/dashboard.service';
-import { DashboardOrder, Stat, TopProduct } from '../../../../core/models/Dashboard.model';
+import { DashboardOrder, Stat, TopProductDTO } from '../../../../core/models/Dashboard.model';
 import { LowerCasePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
@@ -16,7 +16,7 @@ export class Dashboard implements OnInit {
 
   stats?: Stat[];
   orders: DashboardOrder[] = [];
-  topProducts: TopProduct[] = [];
+  topProducts: TopProductDTO[] = [];
 
   ngOnInit() {
     this.loadData();

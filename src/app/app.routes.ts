@@ -38,6 +38,20 @@ export const routes: Routes = [
             import('./features/orders/pages/order-pos/order-pos.component')
                 .then(m => m.OrderPos)
     },
+    {
+        path: 'users',
+        canActivate: [authGuard],
+        loadComponent: () =>
+            import('./features/users/pages/user-list')
+                .then(m => m.UserList)
+    },
+    {
+        path: 'reports',
+        canActivate: [authGuard],
+        loadComponent: () =>
+            import('./features/reports/pages/reports-dashboard')
+                .then(m => m.ReportsDashboard)
+    },
     //No se usa, pero por si acaso lo dejo
     {
         path: 'product-list',

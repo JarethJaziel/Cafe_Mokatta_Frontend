@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
-import { OrderItem, Order } from '../../../../core/models/Order.model';
-import { Product } from '../../../../core/models/Product.model';
+import { CartItem, CreateOrderRequest, OrderItemRequest } from '../../../../core/models/Order.model';
+import { ProductResponse } from '../../../../core/models/Product.model';
 import { ProductService } from '../../../products/services/product.service';
 import { PosService } from '../../services/pos.service';
 
@@ -14,8 +14,8 @@ export class OrderPos {
   private productService = inject(ProductService);
   private posService = inject(PosService);
 
-  products: Product[] = [];
-  cart: OrderItem[] = [];
+  products: ProductResponse[] = [];
+  cart: CartItem[] = [];
 
   ngOnInit() {
     this.productService.getProducts()
@@ -24,33 +24,35 @@ export class OrderPos {
 
   // ================= ADD =================
   addToCart(product: any) {
-    const item = this.cart.find(i => i.productId === (product.id || product.productId));
+    const id = product.id || product.productId;
+    const item = this.cart.find(i => i.productId === id);
 
     if (item) {
       item.quantity++;
     } else {
       this.cart.push({
-        productId: product.id!,
-        name: product.name,
-        price: product.price,
+        productId: product.id || product.productId,
+        name: product.name || product.productName,
+        price: product.price || product.unitPrice,
         quantity: 1
       });
     }
   }
 
   decreaseQty(product: any) {
-    const item = this.cart.find(i => i.productId === (product.id || product.productId));
+    const id = product.id || product.productId;
+    const item = this.cart.find(i => i.productId === id);
 
     if (!item) return;
 
     item.quantity--;
 
     if (item.quantity === 0) {
-      // Filtramos para eliminarlo si llega a cero
-      this.cart = this.cart.filter(i => i.productId !== (product.id || product.productId));
+      this.cart = this.cart.filter(i => i.productId !== id);
     }
   }
-  getQty(productId: number): number {
+
+  getQty(productId: string): number {
     const item = this.cart.find(i => i.productId === productId);
     return item ? item.quantity : 0;
   }
@@ -62,19 +64,16 @@ export class OrderPos {
   }
 
   // ================= ORDER =================
-  buildOrder(method: 'CASH' | 'CARD'): Order {
-    return {
-      orderDate: new Date(),
-      items: this.cart,
-      totalAmount: this.subtotal,
-      paymentMethod: method
-    };
-  }
-
   processPayment(method: 'CASH' | 'CARD') {
-    const order = this.buildOrder(method);
+    const request: CreateOrderRequest = {
+      paymentMethod: method,
+      items: this.cart.map(item => ({
+        productId: item.productId,
+        quantity: item.quantity
+      } as OrderItemRequest))
+    };
 
-    this.posService.createOrder(order)
+    this.posService.createOrder(request)
       .subscribe(() => this.clearCart());
   }
 
