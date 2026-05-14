@@ -2,38 +2,28 @@
   <div class="card shadow-sm" style="width: 100%; max-width: 400px; border-radius: 12px;">
     <div class="card-body p-4 p-md-5">
       <div class="text-center mb-4">
-        <h2 class="fw-bold text-primary">Mokatta POS</h2>
-        <p class="text-muted">Inicia sesión para continuar</p>
+        <h2 class="fw-bold text-primary">Mokatta System</h2>
+        <p class="text-muted">Login to continue</p>
       </div>
 
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <!-- Email Input -->
         <div class="mb-3">
-          <label for="email" class="form-label">Correo Electrónico</label>
-          <input 
-            type="email" 
-            id="email" 
-            class="form-control" 
-            formControlName="email" 
-            placeholder="admin@mokatta.com"
+          <label for="email" class="form-label">Email</label>
+          <input type="email" id="email" class="form-control" formControlName="email" placeholder="admin@mokatta.com"
             [ngClass]="{'is-invalid': loginForm.get('email')?.invalid && loginForm.get('email')?.touched}">
           <div class="invalid-feedback">
-            Por favor, ingresa un correo válido.
+            Enter a valid email, please.
           </div>
         </div>
 
         <!-- Password Input -->
         <div class="mb-4">
-          <label for="password" class="form-label">Contraseña</label>
-          <input 
-            type="password" 
-            id="password" 
-            class="form-control" 
-            formControlName="password" 
-            placeholder="••••••••"
+          <label for="password" class="form-label">Password</label>
+          <input type="password" id="password" class="form-control" formControlName="password" placeholder="••••••••"
             [ngClass]="{'is-invalid': loginForm.get('password')?.invalid && loginForm.get('password')?.touched}">
           <div class="invalid-feedback">
-            La contraseña debe tener al menos 6 caracteres.
+            Password must be at least 6 characters long.
           </div>
         </div>
 
@@ -45,8 +35,9 @@
         <!-- Submit Button -->
         <div class="d-grid">
           <button type="submit" class="btn btn-primary py-2" [disabled]="isLoading()">
-            <span *ngIf="isLoading()" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-            {{ isLoading() ? 'Entrando...' : 'Ingresar' }}
+            <span *ngIf="isLoading()" class="spinner-border spinner-border-sm me-2" role="status"
+              aria-hidden="true"></span>
+            {{ isLoading() ? 'Loggin in...' : 'Login' }}
           </button>
         </div>
       </form>

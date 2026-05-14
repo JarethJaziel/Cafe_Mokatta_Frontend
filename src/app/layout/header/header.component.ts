@@ -9,7 +9,9 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrl: './header.css',
 })
 export class Header {
-  private authService = inject(AuthService);
+  readonly authService = inject(AuthService);
+
+  user = this.authService.user;
 
   logout() {
     this.authService.logout();

@@ -40,8 +40,7 @@ export class LoginComponent {
       },
       error: (err) => {
         this.isLoading.set(false);
-        this.errorMessage.set('Credenciales inválidas o error en el servidor.');
-        console.error('Login error', err);
+        this.errorMessage.set(err.error.message);
       }
     });
   }

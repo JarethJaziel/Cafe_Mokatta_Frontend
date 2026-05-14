@@ -1,4 +1,9 @@
 // ===================== USER RESPONSE =====================
+export type UserInfo = {
+  id: string;
+  name: string;
+  email: string;
+}
 
 export interface UserResponse {
   id: string;
