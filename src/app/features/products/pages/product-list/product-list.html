@@ -31,7 +31,7 @@
                 <th class="text-muted fw-semibold border-0 metric-label">Product Name</th>
                 <th class="text-muted fw-semibold border-0 metric-label">Category</th>
                 <th class="text-muted fw-semibold border-0 metric-label">Price</th>
-                <th class="text-muted fw-semibold border-0 metric-label">Stock</th>
+                <th class="text-muted fw-semibold border-0 metric-label text-center">Available</th>
                 <th class="border-0"></th>
               </tr>
             </thead>
@@ -39,20 +39,20 @@
               @for (product of products; track product.id) {
               <tr>
                 <td>
-                  <img [src]="product.image" alt="{{ product.name }}"
+                  <img [src]="product.imageUrl || 'https://placehold.co/50x50?text=No+Img'" alt="{{ product.name }}"
                     class="rounded-2 product-thumb">
                 </td>
                 <td class="fw-semibold">{{ product.name }}</td>
                 <td>
                   <span class="badge bg-primary-subtle text-primary rounded-pill px-3">
-                    {{ product.category }}
+                    {{ product.categoryName }}
                   </span>
                 </td>
                 <td class="fw-bold">${{ product.price }}</td>
-                <td>
-                  <span [class]="product.stock < 20 ? 'text-danger fw-semibold' : 'text-dark'">
-                    {{ product.stock }}
-                  </span>
+                <td class="text-center">
+                  <div class="form-check form-switch d-flex justify-content-center">
+                    <input class="form-check-input" type="checkbox" [checked]="product.available" disabled>
+                  </div>
                 </td>
                 <td class="text-end">
                   <div class="dropdown">
@@ -64,11 +64,6 @@
                       <li>
                         <button class="dropdown-item rounded-2 py-2">
                           <i class="bi bi-pencil me-2 text-primary"></i> Edit
-                        </button>
-                      </li>
-                      <li>
-                        <button class="dropdown-item rounded-2 py-2 text-danger">
-                          <i class="bi bi-trash me-2"></i> Delete
                         </button>
                       </li>
                     </ul>
@@ -168,10 +163,12 @@
             </div>
           </div>
 
-          <!-- Stock -->
+          <!-- Availability -->
           <div class="mb-4">
-            <label class="form-label fw-semibold text-dark" style="font-size: 0.85rem;">Stock</label>
-            <input type="number" class="form-control rounded-3" placeholder="0">
+            <div class="form-check form-switch mt-2">
+              <input class="form-check-input" type="checkbox" id="listAvailableSwitch" checked>
+              <label class="form-check-label fw-semibold text-dark" for="listAvailableSwitch">Available for Sale</label>
+            </div>
           </div>
 
           <!-- Buttons -->

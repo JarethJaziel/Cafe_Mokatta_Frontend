@@ -1,55 +1,41 @@
 import { inject, Injectable } from '@angular/core';
-import { of } from 'rxjs';
-import { Product } from '../../../core/models/Product.model';
-import { MockDataService } from '../../../core/services/mock-data.service';
 import { MokkatAPIService } from '../../../core/services/mokkat-api.service';
+import { ProductResponse, CreateProductRequest, UpdateProductRequest } from '../../../core/models/Product.model';
+import { CategoryResponse } from '../../../core/models/Product.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
 
-  private readonly mock = inject(MockDataService);
   private readonly api = inject(MokkatAPIService);
 
-  private readonly useMock = true; //Cambiar cuando haya backend uwu
-
   getProducts() {
-    if (this.useMock) {
-      return of(this.mock.getProducts());
-    }
-    return this.api.get<Product[]>('products');
+    return this.api.get<ProductResponse[]>('products');
   }
 
-  getProduct(id: number) {
-    if (this.useMock) {
-      return of(this.mock.getProductById(id));
-    }
-    return this.api.get<Product>(`products/${id}`);
+  getCategories() {
+    return this.api.get<CategoryResponse[]>('categories');
   }
 
-  createProduct(product: Product) {
-    if (this.useMock) {
-      console.log('MOCK CREATE', product);
-      return of(product);
-    }
-    return this.api.post<Product>('products', product);
+  getProduct(id: string) {
+    return this.api.get<ProductResponse>(`products/${id}`);
   }
 
-  updateProduct(id: number, product: Product) {
-    if (this.useMock) {
-      console.log('MOCK UPDATE', product);
-      return of(product);
-    }
-    return this.api.put<Product>(`products/${id}`, product);
+  createProduct(product: CreateProductRequest) {
+    return this.api.post<ProductResponse>('products', product);
   }
 
-  deleteProduct(id: number) {
-    if (this.useMock) {
-      console.log('MOCK DELETE', id);
-      return of(true);
-    }
-    return this.api.delete(`products/${id}`);
+  updateProduct(id: string, product: UpdateProductRequest) {
+    return this.api.patch<ProductResponse>(`products/${id}`, product);
+  }
+
+  toggleAvailable(id: string) {
+    return this.api.patchNoBody<void>(`products/${id}/toggle-available`);
+  }
+
+  toggleActive(id: string) {
+    return this.api.patchNoBody<void>(`products/${id}/toggle-active`);
   }
 
 }

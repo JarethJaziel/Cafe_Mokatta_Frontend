@@ -1,8 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { MokkatAPIService } from '../../../core/services/mokkat-api.service';
-import { MockDataService } from '../../../core/services/mock-data.service';
-import { of } from 'rxjs';
-import { InventoryItem } from '../../../core/models/Inventory.model';
+import {
+  IngredientResponse,
+  CreateIngredientRequest,
+  UpdateIngredientRequest,
+  AdjustStockRequest
+} from '../../../core/models/Inventory.model';
 
 @Injectable({
   providedIn: 'root',
@@ -10,28 +13,33 @@ import { InventoryItem } from '../../../core/models/Inventory.model';
 export class InventoryService {
 
   private readonly api = inject(MokkatAPIService);
-  private readonly mock = inject(MockDataService);
-  private readonly useMock = true;
-
 
   getItems() {
-    if (this.useMock) return of(this.mock.getInventory());
-    return this.api.get<InventoryItem[]>('inventory');
+    return this.api.get<IngredientResponse[]>('inventory');
   }
 
-  create(item: InventoryItem) {
-    if (this.useMock) return of(this.mock.addInventory(item));
-    return this.api.post<InventoryItem>('inventory', item);
+  getLowStock() {
+    return this.api.get<IngredientResponse[]>('inventory/low-stock');
   }
 
-  delete(id: number) {
-    if (this.useMock) return of(this.mock.deleteInventory(id));
-    return this.api.delete(`inventory/${id}`);
+  getById(id: string) {
+    return this.api.get<IngredientResponse>(`inventory/${id}`);
   }
 
-  update(id: number, item: InventoryItem) {
-    if (this.useMock) return of(this.mock.updateInventory(id, item));
-    return this.api.put<InventoryItem>(`inventory/${id}`, item);
+  create(item: CreateIngredientRequest) {
+    return this.api.post<IngredientResponse>('inventory', item);
+  }
+
+  update(id: string, item: UpdateIngredientRequest) {
+    return this.api.patch<IngredientResponse>(`inventory/${id}`, item);
+  }
+
+  adjustStock(id: string, request: AdjustStockRequest) {
+    return this.api.patch<IngredientResponse>(`inventory/${id}/adjust`, request);
+  }
+
+  toggleActive(id: string) {
+    return this.api.patchNoBody<void>(`inventory/${id}/toggle-active`);
   }
 
 }

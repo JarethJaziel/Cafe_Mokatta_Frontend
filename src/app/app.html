@@ -1,23 +1,27 @@
 <div class="d-flex flex-column vh-100">
 
-  <!-- HEADER -->
-  <app-header></app-header>
+  <!-- HEADER (Solo si está autenticado) -->
+  @if(authService.isAuthenticated()) {
+    <app-header></app-header>
+  }
 
   <!-- BODY -->
   <div class="d-flex flex-grow-1">
 
-    <!-- SIDEBAR -->
-    <div class="sidebar-container">
-      <app-sidebar></app-sidebar>
-    </div>
+    <!-- SIDEBAR (Solo si está autenticado) -->
+    @if(authService.isAuthenticated()) {
+      <div class="sidebar-container">
+        <app-sidebar></app-sidebar>
+      </div>
+    }
 
     <!-- CONTENT -->
     <div class="flex-grow-1 bg-light overflow-auto">
-      <div class="p-4">
+      <div [ngClass]="{'p-4': authService.isAuthenticated()}" class="h-100">
         <router-outlet></router-outlet>
       </div>
     </div>
 
   </div>
 
-</div>
+</div>

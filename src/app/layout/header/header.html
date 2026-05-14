@@ -12,9 +12,10 @@
     <div class="collapse navbar-collapse" id="nav">
         <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-                <a class="nav-link" routerLink="/auth">Account</a>
+                <button class="btn nav-link d-flex align-items-center gap-2" (click)="logout()">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
             </li>
-
         </ul>
     </div>
 

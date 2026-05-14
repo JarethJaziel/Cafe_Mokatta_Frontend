@@ -1,0 +1,134 @@
+<div class="container-fluid px-4 py-4">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="fw-bold text-dark mb-0">User Management</h2>
+      <small class="text-muted">Manage system users</small>
+    </div>
+    <div class="d-flex gap-2">
+      <input class="form-control border-0 shadow-sm rounded-3 bg-light" style="min-width: 280px;"
+        placeholder="Search users..." [(ngModel)]="search">
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm rounded-3 p-3">
+        <h6 class="text-muted metric-label mb-1">Total Users</h6>
+        <h3 class="fw-bold mb-0">{{ users.length }}</h3>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm rounded-3 p-3">
+        <h6 class="text-muted metric-label mb-1">Active</h6>
+        <h3 class="fw-bold mb-0 text-success">{{ users.filter(u => u.active).length }}</h3>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm rounded-3 p-3">
+        <h6 class="text-muted metric-label mb-1">Inactive</h6>
+        <h3 class="fw-bold mb-0 text-danger">{{ users.filter(u => !u.active).length }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- Table -->
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-body p-3">
+          <h6 class="fw-bold text-uppercase text-muted mb-3 metric-label">User List</h6>
+
+          <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+              <tr>
+                <th class="border-0 metric-label text-muted">Name</th>
+                <th class="border-0 metric-label text-muted">Email</th>
+                <th class="border-0 metric-label text-muted text-center">Status</th>
+                <th class="border-0 metric-label text-muted text-center">Active</th>
+                <th class="border-0"></th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (u of filteredUsers; track u.id) {
+              <tr [class.table-secondary]="!u.active">
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="rounded-circle bg-primary-subtle text-primary d-flex align-items-center justify-content-center"
+                      style="width: 36px; height: 36px; font-size: 0.85rem;">
+                      {{ u.name.charAt(0).toUpperCase() }}
+                    </div>
+                    <span class="fw-semibold">{{ u.name }}</span>
+                  </div>
+                </td>
+                <td class="text-muted">{{ u.email }}</td>
+                <td class="text-center">
+                  <span class="badge rounded-pill px-3" [ngClass]="{
+                    'bg-success-subtle text-success': u.active,
+                    'bg-danger-subtle text-danger': !u.active
+                  }">
+                    {{ u.active ? 'Active' : 'Inactive' }}
+                  </span>
+                </td>
+                <td class="text-center">
+                  <div class="form-check form-switch d-flex justify-content-center">
+                    <input class="form-check-input" type="checkbox" [checked]="u.active"
+                      (change)="toggleActive(u.id)">
+                  </div>
+                </td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-light rounded-2" (click)="edit(u)">
+                    <i class="bi bi-pencil text-primary"></i>
+                  </button>
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm rounded-3">
+        <div class="card-body p-4">
+          <h6 class="fw-bold text-dark mb-4">
+            {{ editing ? 'Edit User' : 'New User' }}
+          </h6>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold field-label">Full Name</label>
+            <input class="form-control rounded-3" placeholder="e.g., John Doe" [(ngModel)]="form.name">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-semibold field-label">Email</label>
+            <input type="email" class="form-control rounded-3" placeholder="john@mokatta.com"
+              [(ngModel)]="form.email" [disabled]="editing">
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold field-label">
+              {{ editing ? 'New Password (leave blank to keep)' : 'Password' }}
+            </label>
+            <input type="password" class="form-control rounded-3" placeholder="Min. 6 characters"
+              [(ngModel)]="form.password">
+          </div>
+
+          <button class="btn btn-primary w-100 py-3 rounded-3 fw-semibold shadow-sm quick-btn mb-2" (click)="save()">
+            {{ editing ? 'Update User' : 'Create User' }}
+          </button>
+
+          <button class="btn btn-link w-100 text-decoration-none text-muted fw-semibold" (click)="resetForm()">
+            Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
