@@ -2,6 +2,6 @@ export interface InventoryItem {
     id?: number;
     name: string;
     unit: string;
-    quantityInStock: number;
-    reorderLevel: number;
+    quantity: number;
+    minStock: number;
 }

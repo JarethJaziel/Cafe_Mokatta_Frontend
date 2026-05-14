@@ -16,22 +16,22 @@ export class InventoryService {
 
   getItems() {
     if (this.useMock) return of(this.mock.getInventory());
-    return this.api.get<InventoryItem[]>('inventory/ingredients');
+    return this.api.get<InventoryItem[]>('inventory');
   }
 
   create(item: InventoryItem) {
     if (this.useMock) return of(this.mock.addInventory(item));
-    return this.api.post<InventoryItem>('inventory/ingredients', item);
+    return this.api.post<InventoryItem>('inventory', item);
   }
 
   delete(id: number) {
     if (this.useMock) return of(this.mock.deleteInventory(id));
-    return this.api.delete(`inventory/ingredients/${id}`);
+    return this.api.delete(`inventory/${id}`);
   }
 
   update(id: number, item: InventoryItem) {
     if (this.useMock) return of(this.mock.updateInventory(id, item));
-    return this.api.put<InventoryItem>(`inventory/ingredients/${id}`, item);
+    return this.api.put<InventoryItem>(`inventory/${id}`, item);
   }
 
 }
