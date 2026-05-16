@@ -45,4 +45,28 @@ export class ReportService {
     return this.api.get<PeakHourDTO[]>('reports/peak-hours', { date });
   }
 
+  downloadPdf(from: string, to: string) {
+
+    return this.api.download(
+      'reports/download/pdf',
+      { from, to },
+      {
+        responseType: 'blob'
+      }
+    );
+
+  }
+
+  downloadExcel(from: string, to: string) {
+
+    return this.api.download(
+      'reports/download/excel',
+      { from, to },
+      {
+        responseType: 'blob'
+      }
+    );
+
+  }
+
 }

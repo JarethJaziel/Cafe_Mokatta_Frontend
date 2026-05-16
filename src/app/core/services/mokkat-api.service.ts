@@ -19,6 +19,16 @@ export class MokkatAPIService {
     return this.http.get<T>(`${this.baseUrl}/${endpoint}`, { params: httpParams });
   }
 
+  download<T>(endpoint: string, params?: Record<string, string>, options?: any) {
+    let httpParams = new HttpParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        httpParams = httpParams.set(key, value);
+      });
+    }
+    return this.http.get<T>(`${this.baseUrl}/${endpoint}`, { params: httpParams, ...options });
+  }
+
   post<T>(endpoint: string, body: any) {
     return this.http.post<T>(`${this.baseUrl}/${endpoint}`, body);
   }

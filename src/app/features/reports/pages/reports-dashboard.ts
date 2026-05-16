@@ -132,4 +132,79 @@ export class ReportsDashboard implements OnInit {
     return `${h}:00 ${ampm}`;
   }
 
+  private downloadFile(
+    response: Blob,
+    filename: string
+  ) {
+
+    const blob = new Blob([response]);
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+
+    a.href = url;
+    a.download = filename;
+
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+
+  }
+
+    downloadPdf() {
+
+    this.reportService
+      .downloadPdf(this.dateFrom, this.dateTo)
+      .subscribe({
+
+        next: (response:any) => {
+
+          this.downloadFile(
+            response,
+            `reporte_${this.dateFrom}_${this.dateTo}.pdf`
+          );
+
+          this.alertService.success('PDF downloaded successfully');
+
+        },
+
+        error: (err) =>
+          this.alertService.error(
+            'Error',
+            err?.error?.message || 'Error downloading PDF'
+          )
+
+      });
+
+  }
+
+  downloadExcel() {
+
+    this.reportService
+      .downloadExcel(this.dateFrom, this.dateTo)
+      .subscribe({
+
+        next: (response:any) => {
+
+          this.downloadFile(
+            response,
+            `reporte_${this.dateFrom}_${this.dateTo}.xlsx`
+          );
+
+          this.alertService.success('Excel downloaded successfully');
+
+        },
+
+        error: (err) => {
+          console.log(err);
+          this.alertService.error(
+            'Error',
+            err?.error?.message || 'Error downloading Excel'
+          )
+
+      }});
+
+  }
+
 }

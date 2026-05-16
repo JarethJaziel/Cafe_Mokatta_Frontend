@@ -42,4 +42,8 @@ export class ProductService {
     return this.api.patchNoBody<void>(`products/${id}/toggle-active`);
   }
 
+  getTicket(id: string){
+    return this.api.get<void>(`tickets/${id}/pdf`);
+  }
+
 }

@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { SearchPipe } from '../../../../shared/pipes/search.pipe';
 import { AlertService } from '../../../../core/services/alert.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-order-pos',
@@ -84,14 +85,48 @@ export class OrderPos {
       } as OrderItemRequest))
     };
 
+    let orderId = "";
+
     this.posService.createOrder(request)
       .subscribe({
-        next: () => {
+        next: response => {
+          orderId = response.id;
           this.alertService.success('Orden creada', `Pago realizado con ${method}`);
           this.clearCart();
+          
+          const qrUrl = this.getQrUrl(orderId);
+          
+          Swal.fire({
+            title: '¡Orden Exitosa!',
+            html: `
+              <div class="text-center">
+                <p class="mb-3 text-muted">Escanea el código para ver el ticket</p>
+                <img src="${qrUrl}" alt="QR Ticket" class="img-fluid rounded border p-2 mb-3 shadow-sm" style="max-width: 200px;">
+                <br>
+              </div>
+            `,
+            showCloseButton: true,
+            showConfirmButton: false
+          });
         },
         error: err => this.alertService.error('Error al procesar pago', err?.error?.message)
       });
+
+  }
+
+  getQrUrl(orderId: string): string {
+    const ticketUrl = `https://mokattapi.onrender.com/api/tickets/${orderId}/pdf`;
+    const logo = encodeURIComponent('https://www.pngarts.com/files/1/Coffee-PNG-Pic.png');
+
+    return `
+    https://quickchart.io/qr
+    ?text=${encodeURIComponent(ticketUrl)}
+    &size=300
+    &margin=2
+    &ecLevel=H
+    &centerImageUrl=${logo}
+    &centerImageSizeRatio=0.25
+  `.replace(/\s/g, '');
   }
 
   clearCart() {

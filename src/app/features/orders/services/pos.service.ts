@@ -21,4 +21,8 @@ export class PosService {
     return this.api.get<OrderResponse>(`orders/${id}`);
   }
 
+  getTicket(id: string) {
+    return this.api.get<void>(`tickets/${id}/pdf`);
+  }
+
 }
