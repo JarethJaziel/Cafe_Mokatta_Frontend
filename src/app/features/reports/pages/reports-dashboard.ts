@@ -11,6 +11,7 @@ import {
   PeakHourDTO,
   CountSeriesDTO
 } from '../../../core/models/Dashboard.model';
+import { AlertService } from '../../../core/services/alert.service';
 
 @Component({
   selector: 'app-reports-dashboard',
@@ -22,6 +23,7 @@ import {
 export class ReportsDashboard implements OnInit {
 
   private readonly reportService = inject(ReportService);
+  private readonly alertService = inject(AlertService);
 
   // Data
   today?: TodayDashboardDTO;
@@ -50,26 +52,47 @@ export class ReportsDashboard implements OnInit {
 
   loadAll() {
     this.reportService.getTodayDashboard()
-      .subscribe(data => this.today = data);
+      .subscribe({
+        next: data => this.today = data,
+        error: err => this.alertService.error('Error', err?.error?.message || 'Error loading dashboard data')
+      });
 
     this.reportService.getSalesSeries(this.dateFrom, this.dateTo)
-      .subscribe(data => this.salesSeries = data);
+      .subscribe({
+        next: data => this.salesSeries = data,
+        error: err => this.alertService.error('Error', err?.error?.message || 'Error loading sales series')
+      });
 
     this.reportService.getOrdersCountSeries(this.dateFrom, this.dateTo)
-      .subscribe(data => this.ordersCounts = data);
+      .subscribe({
+        next: data => this.ordersCounts = data,
+        error: err => this.alertService.error('Error', err?.error?.message || 'Error loading order counts')
+      });
 
     this.reportService.getTopProducts(this.dateFrom, this.dateTo, 10)
-      .subscribe(data => this.topProducts = data);
+      .subscribe({
+        next: data => this.topProducts = data,
+        error: err => this.alertService.error('Error', err?.error?.message || 'Error loading top products')
+      });
 
     this.reportService.getRevenueByCategory(this.dateFrom, this.dateTo)
-      .subscribe(data => this.categoryRevenue = data);
+      .subscribe({
+        next: data => this.categoryRevenue = data,
+        error: err => this.alertService.error('Error', err?.error?.message || 'Error loading category revenue')
+      });
 
     this.reportService.getPaymentMethodSplit(this.dateFrom, this.dateTo)
-      .subscribe(data => this.paymentSplit = data);
+      .subscribe({
+        next: data => this.paymentSplit = data,
+        error: err => this.alertService.error('Error', err?.error?.message || 'Error loading payment split')
+      });
 
     const todayStr = new Date().toISOString().split('T')[0];
     this.reportService.getPeakHours(todayStr)
-      .subscribe(data => this.peakHours = data);
+      .subscribe({
+        next: data => this.peakHours = data,
+        error: err => this.alertService.error('Error', err?.error?.message || 'Error loading peak hours')
+      });
   }
 
   onDateChange() {
@@ -107,6 +130,81 @@ export class ReportsDashboard implements OnInit {
     const ampm = hour >= 12 ? 'PM' : 'AM';
     const h = hour % 12 || 12;
     return `${h}:00 ${ampm}`;
+  }
+
+  private downloadFile(
+    response: Blob,
+    filename: string
+  ) {
+
+    const blob = new Blob([response]);
+
+    const url = window.URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+
+    a.href = url;
+    a.download = filename;
+
+    a.click();
+
+    window.URL.revokeObjectURL(url);
+
+  }
+
+    downloadPdf() {
+
+    this.reportService
+      .downloadPdf(this.dateFrom, this.dateTo)
+      .subscribe({
+
+        next: (response:any) => {
+
+          this.downloadFile(
+            response,
+            `reporte_${this.dateFrom}_${this.dateTo}.pdf`
+          );
+
+          this.alertService.success('PDF downloaded successfully');
+
+        },
+
+        error: (err) =>
+          this.alertService.error(
+            'Error',
+            err?.error?.message || 'Error downloading PDF'
+          )
+
+      });
+
+  }
+
+  downloadExcel() {
+
+    this.reportService
+      .downloadExcel(this.dateFrom, this.dateTo)
+      .subscribe({
+
+        next: (response:any) => {
+
+          this.downloadFile(
+            response,
+            `reporte_${this.dateFrom}_${this.dateTo}.xlsx`
+          );
+
+          this.alertService.success('Excel downloaded successfully');
+
+        },
+
+        error: (err) => {
+          console.log(err);
+          this.alertService.error(
+            'Error',
+            err?.error?.message || 'Error downloading Excel'
+          )
+
+      }});
+
   }
 
 }

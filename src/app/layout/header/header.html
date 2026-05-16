@@ -4,19 +4,37 @@
         Mokatta
     </a>
 
-
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
         <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="nav">
-        <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-                <button class="btn nav-link d-flex align-items-center gap-2" (click)="logout()">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </button>
+
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-2">
+
+            <!-- Usuario -->
+            <li class="nav-item text-light d-flex align-items-center gap-2">
+
+                <i class="bi bi-person-circle fs-5"></i>
+
+                <span class="fw-semibold">
+                    {{ user()?.name }}
+                </span>
+
             </li>
+
+            <!-- Logout -->
+            <li class="nav-item">
+
+                <button class="btn btn-outline-light btn-sm d-flex align-items-center gap-2" (click)="logout()">
+                    <i class="bi bi-box-arrow-right"></i>
+                    Logout
+                </button>
+
+            </li>
+
         </ul>
+
     </div>
 
 </nav>

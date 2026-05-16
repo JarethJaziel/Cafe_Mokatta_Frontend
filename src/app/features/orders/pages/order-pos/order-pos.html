@@ -17,12 +17,12 @@
             <span class="input-group-text bg-light border-0 rounded-start-3">
               <i class="bi bi-search"></i>
             </span>
-            <input class="form-control border-0 bg-light rounded-end-3" placeholder="Search products...">
+            <input class="form-control border-0 bg-light rounded-end-3" placeholder="Search products..." [(ngModel)]="search">
           </div>
         </div>
 
         <div class="row g-3">
-          @for (p of products; track p.id) {
+          @for (p of products | search: search : ['name']; track p.id) {
           <div class="col-6 col-md-4 col-xl-3">
             <div class="card h-100 border-0 shadow-sm rounded-3 product-card overflow-hidden">
               <div class="product-img-container position-relative">
@@ -72,6 +72,12 @@
 
             </div>
           </div>
+          }
+          @if ((products | search: search : ['name']).length === 0) {
+            <div class="col-12 text-center text-muted py-5">
+              <i class="bi bi-search fs-1 mb-2 d-block"></i>
+              No products found.
+            </div>
           }
         </div>
       </div>

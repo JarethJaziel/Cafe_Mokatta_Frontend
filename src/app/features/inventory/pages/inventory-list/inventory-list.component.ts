@@ -3,15 +3,19 @@ import { IngredientResponse, CreateIngredientRequest, UpdateIngredientRequest, A
 import { InventoryService } from '../../services/inventory.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AlertService } from '../../../../core/services/alert.service';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { SearchPipe } from '../../../../shared/pipes/search.pipe';
 
 @Component({
   selector: 'app-inventory-list',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, NgxPaginationModule, SearchPipe],
   templateUrl: './inventory-list.html',
   styleUrl: './inventory-list.css',
 })
 export class InventoryList {
   private readonly service = inject(InventoryService);
+  private readonly alertService = inject(AlertService);
 
   items: IngredientResponse[] = [];
 
@@ -28,15 +32,19 @@ export class InventoryList {
 
   load() {
     this.service.getItems()
-      .subscribe(data => this.items = data);
+      .subscribe({
+        next: data => this.items = data,
+        error: err => this.alertService.error('Error al cargar inventario', err?.error?.message || 'Error desconocido')
+      });
   }
 
   search = '';
+  page = 1;
+  pageSize = 10;
 
   editing = false;
   selectedId?: string;
 
-  // ================= ADJUST STOCK =================
   adjustStock(id: string, type: 'ADD' | 'SUBTRACT') {
     const amountStr = prompt(`Enter amount to ${type.toLowerCase()}:`);
     if (!amountStr) return;
@@ -45,7 +53,13 @@ export class InventoryList {
 
     const request: AdjustStockRequest = { amount, type };
     this.service.adjustStock(id, request)
-      .subscribe(() => this.load());
+      .subscribe({
+        next: () => {
+          this.alertService.success('Stock actualizado');
+          this.load();
+        },
+        error: err => this.alertService.error('Error al ajustar stock', err?.error?.message)
+      });
   }
 
   // ================= EDIT =================
@@ -62,9 +76,11 @@ export class InventoryList {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // ================= SAVE =================
   save() {
-    if (!this.form.name || !this.form.unit) return;
+    if (!this.form.name || !this.form.unit) {
+      this.alertService.warning('Campos requeridos', 'Por favor completa el nombre y la unidad.');
+      return;
+    }
 
     if (this.editing && this.selectedId) {
       const updatePayload: UpdateIngredientRequest = {
@@ -73,15 +89,23 @@ export class InventoryList {
         minStock: this.form.minStock
       };
       this.service.update(this.selectedId, updatePayload)
-        .subscribe(() => {
-          this.resetForm();
-          this.load();
+        .subscribe({
+          next: () => {
+            this.alertService.success('Ingrediente actualizado');
+            this.resetForm();
+            this.load();
+          },
+          error: err => this.alertService.error('Error al actualizar', err?.error?.message)
         });
     } else {
       this.service.create(this.form)
-        .subscribe(() => {
-          this.resetForm();
-          this.load();
+        .subscribe({
+          next: () => {
+            this.alertService.success('Ingrediente creado');
+            this.resetForm();
+            this.load();
+          },
+          error: err => this.alertService.error('Error al crear', err?.error?.message)
         });
     }
   }
@@ -98,10 +122,15 @@ export class InventoryList {
     this.selectedId = undefined;
   }
 
-  // ================= TOGGLE ACTIVE =================
   toggleActive(id: string) {
     this.service.toggleActive(id)
-      .subscribe(() => this.load());
+      .subscribe({
+        next: () => {
+          this.alertService.success('Estado actualizado');
+          this.load();
+        },
+        error: err => this.alertService.error('Error', err?.error?.message)
+      });
   }
 
 }

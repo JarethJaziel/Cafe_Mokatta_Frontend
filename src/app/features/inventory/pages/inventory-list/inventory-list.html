@@ -56,7 +56,7 @@
               </tr>
             </thead>
             <tbody>
-              @for (i of items.filter(x => x.name.toLowerCase().includes(search?.toLowerCase() || '')); track i.id) {
+              @for (i of items | search: search: ['name', 'unit'] | paginate: { itemsPerPage: pageSize, currentPage: page }; track i.id) {
               <tr [class.table-secondary]="!i.active">
                 <td class="fw-semibold">{{ i.name }}</td>
                 <td><span class="text-muted">{{ i.unit }}</span></td>
@@ -94,8 +94,17 @@
                 </td>
               </tr>
               }
+              @if ((items | search: search: ['name', 'unit']).length === 0) {
+                <tr>
+                  <td colspan="6" class="text-center text-muted py-4">No matching supplies found.</td>
+                </tr>
+              }
             </tbody>
           </table>
+          
+          <div class="d-flex justify-content-end mt-3">
+            <pagination-controls (pageChange)="page = $event" previousLabel="Ant" nextLabel="Sig"></pagination-controls>
+          </div>
         </div>
       </div>
     </div>
@@ -110,13 +119,19 @@
           <div class="mb-3">
             <label class="form-label fw-semibold field-label">Supply Name</label>
             <input class="form-control rounded-3 form-control-custom" placeholder="e.g., Coffee Beans"
-              [(ngModel)]="form.name">
+              [(ngModel)]="form.name" [ngClass]="{'is-invalid': !form.name && (form.name !== '' || editing)}">
+            @if(!form.name && (form.name !== '' || editing)) {
+              <div class="invalid-feedback">Name is required.</div>
+            }
           </div>
 
           <div class="mb-3">
             <label class="form-label fw-semibold field-label">Unit of Measure</label>
             <input class="form-control rounded-3 form-control-custom" placeholder="g, ml, pcs..."
-              [(ngModel)]="form.unit">
+              [(ngModel)]="form.unit" [ngClass]="{'is-invalid': !form.unit && (form.unit !== '' || editing)}">
+            @if(!form.unit && (form.unit !== '' || editing)) {
+              <div class="invalid-feedback">Unit is required.</div>
+            }
           </div>
 
           <div class="row mb-4">

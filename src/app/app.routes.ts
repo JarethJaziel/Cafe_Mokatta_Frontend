@@ -57,14 +57,14 @@ export const routes: Routes = [
         path: 'product-list',
         canActivate: [authGuard],
         loadComponent: () =>
-            import('./features/products/pages/product-list/product-list.component')
+            import('./features/products/components/product-list/product-list.component')
                 .then(m => m.ProductList)
     },
     {
         path: 'products/:id',
         canActivate: [authGuard],
         loadComponent: () =>
-            import('./features/products/pages/product-detail/product-detail.component')
+            import('./features/products/components/product-detail/product-detail.component')
                 .then(m => m.ProductDetail)
     }
 ];
