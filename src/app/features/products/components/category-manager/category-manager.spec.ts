@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CategoryManagerComponent } from './category.manager.component';
+import { CategoryManagerComponent } from './category-manager.component';
 
-describe('CategoryManagerComponent', () => {
+describe('CategoryManager', () => {
   let component: CategoryManagerComponent;
   let fixture: ComponentFixture<CategoryManagerComponent>;
 

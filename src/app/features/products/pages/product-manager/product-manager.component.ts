@@ -3,10 +3,10 @@ import { ProductResponse, CreateProductRequest, UpdateProductRequest, CategoryRe
 import { ProductService } from '../../services/product.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-
+import { CategoryManagerComponent } from '../../components/category-manager/category-manager.component';
 @Component({
   selector: 'app-product-manager',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, CategoryManagerComponent],
   templateUrl: './product-manager.html',
   styleUrl: './product-manager.css',
 })
@@ -21,6 +21,8 @@ export class ProductManager implements OnInit {
 
   editing = false;
   selectedId?: string;
+
+  errorMessage = '';
 
   ngOnInit() {
     this.loadProducts();
@@ -40,11 +42,14 @@ export class ProductManager implements OnInit {
   // Previsualización de imagen
   imagePreview: string | ArrayBuffer | null = null;
 
+  selectedFile?: File;
+
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
-
+    this.selectedFile = file;
     if (file) {
-      // Crear previsualización para el usuario
+      this.selectedFile = file;
+
       const reader = new FileReader();
       reader.onload = () => {
         this.imagePreview = reader.result;
@@ -54,90 +59,213 @@ export class ProductManager implements OnInit {
       reader.readAsDataURL(file);
     }
   }
+// ================= LOAD =================
 
   loadProducts() {
+
     this.productService.getProducts()
-      .subscribe(data => this.products = data);
+      .subscribe({
+
+        next: (data) => {
+
+          this.products = data;
+
+        },
+
+        error: () => {
+
+          this.errorMessage =
+            'Error loading products';
+
+        }
+
+      });
+
   }
 
   loadCategories() {
+
     this.productService.getCategories()
-      .subscribe(data => this.categoriesList = data);
+      .subscribe({
+
+        next: (data) => {
+
+          this.categoriesList = data;
+
+        },
+
+        error: () => {
+
+          this.errorMessage =
+            'Error loading categories';
+
+        }
+
+      });
+
   }
 
   // ================= SAVE =================
+
   save() {
-    if (this.editing && this.selectedId) {
-      const updatePayload: UpdateProductRequest = {
-        name: this.form.name || undefined,
-        description: this.form.description || undefined,
-        price: this.form.price || undefined,
-        categoryId: this.form.categoryId || undefined,
-        imageUrl: this.form.imageUrl || undefined
-      };
 
-      this.productService.updateProduct(this.selectedId, updatePayload)
-        .subscribe(() => {
-          this.resetForm();
-          this.loadProducts();
-        });
+    this.errorMessage = '';
 
-    } else {
-      this.productService.createProduct(this.form)
-        .subscribe(() => {
-          this.resetForm();
-          this.loadProducts();
-        });
-    }
+    const payload = {
+
+      ...this.form,
+
+      description: this.form.description || ''
+
+    };
+
+    const request = this.editing && this.selectedId
+
+      ? this.productService.updateProduct(
+          this.selectedId,
+          payload as UpdateProductRequest
+        )
+
+      : this.productService.createProduct(payload);
+
+    request.subscribe({
+
+      next: () => {
+
+        this.resetForm();
+
+        this.loadProducts();
+
+      },
+
+      error: (err) => {
+
+        this.errorMessage =
+
+          err?.error?.message ||
+
+          'Error saving product';
+
+      }
+
+    });
+
   }
 
   // ================= EDIT =================
+
   edit(product: ProductResponse) {
+
     this.form = {
+
       name: product.name,
-      description: product.description,
+
+      description: product.description || '',
+
       price: product.price,
+
       categoryId: product.categoryId,
-      imageUrl: product.imageUrl
+
+      imageUrl: product.imageUrl || undefined
+
     };
+
     this.editing = true;
+
     this.selectedId = product.id;
+
     this.imagePreview = product.imageUrl || null;
+
   }
 
   // ================= TOGGLE =================
+
   toggleAvailable(id: string) {
+
     this.productService.toggleAvailable(id)
-      .subscribe(() => this.loadProducts());
+      .subscribe({
+
+        next: () => {
+
+          this.loadProducts();
+
+        },
+
+        error: () => {
+
+          this.errorMessage =
+            'Error updating product availability';
+
+        }
+
+      });
+
   }
 
   toggleActive(id: string) {
+
     this.productService.toggleActive(id)
-      .subscribe(() => this.loadProducts());
+      .subscribe({
+
+        next: () => {
+
+          this.loadProducts();
+
+        },
+
+        error: () => {
+
+          this.errorMessage =
+            'Error updating product status';
+
+        }
+
+      });
+
   }
 
   // ================= RESET =================
+
   resetForm() {
+
     this.form = this.emptyForm();
+
     this.editing = false;
+
     this.selectedId = undefined;
+
     this.imagePreview = null;
+
+    this.errorMessage = '';
+
   }
 
+  // ================= CATEGORY STATS =================
+
   get categories() {
+
     const total = this.products.length;
+
     if (total === 0) return [];
 
     const counts = this.products.reduce((acc: any, p) => {
+
       const catName = p.categoryName || 'Uncategorized';
+
       acc[catName] = (acc[catName] || 0) + 1;
+
       return acc;
+
     }, {});
 
     return Object.keys(counts).map(key => ({
+
       name: key,
+
       count: counts[key],
+
       percentage: (counts[key] / total) * 100
+
     }));
   }
 

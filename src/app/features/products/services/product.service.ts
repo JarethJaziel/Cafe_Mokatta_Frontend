@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { MokkatAPIService } from '../../../core/services/mokkat-api.service';
-import { ProductResponse, CreateProductRequest, UpdateProductRequest } from '../../../core/models/Product.model';
+import { ProductResponse, CreateProductRequest, UpdateProductRequest, CreateCategoryRequest } from '../../../core/models/Product.model';
 import { CategoryResponse } from '../../../core/models/Product.model';
 
 @Injectable({
@@ -12,6 +12,10 @@ export class ProductService {
 
   getProducts() {
     return this.api.get<ProductResponse[]>('products');
+  }
+
+  createCategory(category: CreateCategoryRequest) {
+    return this.api.post<CategoryResponse>('categories', category);
   }
 
   getCategories() {

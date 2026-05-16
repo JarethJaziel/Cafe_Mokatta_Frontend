@@ -1,0 +1,57 @@
+<div class="card border-0 shadow-sm rounded-3">
+
+    <div class="card-body p-4">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <div>
+
+                <h6 class="fw-bold text-dark mb-0">
+                    Add Category
+                </h6>
+
+                <small class="text-muted">
+                    Create new product categories
+                </small>
+
+            </div>
+
+        </div>
+
+        @if(errorMessage) {
+
+        <div class="alert alert-danger rounded-3">
+
+            {{ errorMessage }}
+
+        </div>
+
+        }
+
+        <div class="mb-3">
+
+            <label class="form-label fw-semibold text-dark">
+
+                Category Name
+
+            </label>
+
+            <input type="text" class="form-control rounded-3" placeholder="e.g. Coffee" [(ngModel)]="form.name">
+
+        </div>
+
+        <button class="btn btn-primary w-100 rounded-3 fw-semibold py-2" (click)="save()" [disabled]="loading">
+
+            @if(loading) {
+
+            <span class="spinner-border spinner-border-sm me-2"></span>
+
+            }
+
+            Create Category
+
+        </button>
+
+    </div>
+
+</div>
