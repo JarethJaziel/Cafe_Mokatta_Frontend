@@ -69,8 +69,9 @@ export class OrderPos {
 
   // ================= TOTAL =================
   get subtotal() {
-    return this.cart.reduce((acc, item) =>
-      acc + (item.price * item.quantity), 0);
+    return this.cart
+      .reduce((acc, item) => acc + (item.price * item.quantity), 0)
+      .toFixed(2);
   }
 
   // ================= ORDER =================
