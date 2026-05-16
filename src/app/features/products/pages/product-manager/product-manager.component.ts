@@ -4,15 +4,18 @@ import { ProductService } from '../../services/product.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CategoryManagerComponent } from '../../components/category-manager/category-manager.component';
+import { AlertService } from '../../../../core/services/alert.service';
+import { SearchPipe } from '../../../../shared/pipes/search.pipe';
 @Component({
   selector: 'app-product-manager',
-  imports: [FormsModule, CommonModule, CategoryManagerComponent],
+  imports: [FormsModule, CommonModule, CategoryManagerComponent, SearchPipe],
   templateUrl: './product-manager.html',
   styleUrl: './product-manager.css',
 })
 export class ProductManager implements OnInit {
 
   private readonly productService = inject(ProductService);
+  private readonly alertService = inject(AlertService);
 
   products: ProductResponse[] = [];
   categoriesList: CategoryResponse[] = [];
@@ -21,8 +24,9 @@ export class ProductManager implements OnInit {
 
   editing = false;
   selectedId?: string;
+  search = '';
 
-  errorMessage = '';
+  // errorMessage = ''; no longer needed since we use AlertService
 
   ngOnInit() {
     this.loadProducts();
@@ -67,18 +71,11 @@ export class ProductManager implements OnInit {
       .subscribe({
 
         next: (data) => {
-
           this.products = data;
-
         },
-
-        error: () => {
-
-          this.errorMessage =
-            'Error loading products';
-
+        error: (err) => {
+          this.alertService.error('Error loading products', err?.error?.message);
         }
-
       });
 
   }
@@ -89,18 +86,11 @@ export class ProductManager implements OnInit {
       .subscribe({
 
         next: (data) => {
-
           this.categoriesList = data;
-
         },
-
-        error: () => {
-
-          this.errorMessage =
-            'Error loading categories';
-
+        error: (err) => {
+          this.alertService.error('Error loading categories', err?.error?.message);
         }
-
       });
 
   }
@@ -108,15 +98,14 @@ export class ProductManager implements OnInit {
   // ================= SAVE =================
 
   save() {
-
-    this.errorMessage = '';
+    if (!this.form.name || !this.form.price || !this.form.categoryId) {
+      this.alertService.warning('Campos incompletos', 'Por favor llena el nombre, precio y categoría.');
+      return;
+    }
 
     const payload = {
-
       ...this.form,
-
       description: this.form.description || ''
-
     };
 
     const request = this.editing && this.selectedId
@@ -129,25 +118,14 @@ export class ProductManager implements OnInit {
       : this.productService.createProduct(payload);
 
     request.subscribe({
-
       next: () => {
-
+        this.alertService.success(this.editing ? 'Product updated' : 'Product created');
         this.resetForm();
-
         this.loadProducts();
-
       },
-
       error: (err) => {
-
-        this.errorMessage =
-
-          err?.error?.message ||
-
-          'Error saving product';
-
+        this.alertService.error('Error saving product', err?.error?.message);
       }
-
     });
 
   }
@@ -184,20 +162,13 @@ export class ProductManager implements OnInit {
 
     this.productService.toggleAvailable(id)
       .subscribe({
-
         next: () => {
-
+          this.alertService.success('Availability updated');
           this.loadProducts();
-
         },
-
-        error: () => {
-
-          this.errorMessage =
-            'Error updating product availability';
-
+        error: (err) => {
+          this.alertService.error('Error updating availability', err?.error?.message);
         }
-
       });
 
   }
@@ -206,20 +177,13 @@ export class ProductManager implements OnInit {
 
     this.productService.toggleActive(id)
       .subscribe({
-
         next: () => {
-
+          this.alertService.success('Status updated');
           this.loadProducts();
-
         },
-
-        error: () => {
-
-          this.errorMessage =
-            'Error updating product status';
-
+        error: (err) => {
+          this.alertService.error('Error updating status', err?.error?.message);
         }
-
       });
 
   }
@@ -229,14 +193,9 @@ export class ProductManager implements OnInit {
   resetForm() {
 
     this.form = this.emptyForm();
-
     this.editing = false;
-
     this.selectedId = undefined;
-
     this.imagePreview = null;
-
-    this.errorMessage = '';
 
   }
 

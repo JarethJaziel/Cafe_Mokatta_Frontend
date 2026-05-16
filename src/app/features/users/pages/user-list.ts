@@ -3,20 +3,26 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { UserResponse, CreateUserRequest, UpdateUserRequest } from '../../../core/models/User.model';
+import { AlertService } from '../../../core/services/alert.service';
+import { SearchPipe } from '../../../shared/pipes/search.pipe';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SearchPipe, NgxPaginationModule],
   templateUrl: './user-list.html',
   styleUrl: './user-list.css',
 })
 export class UserList implements OnInit {
 
   private readonly userService = inject(UserService);
+  private readonly alertService = inject(AlertService);
 
   users: UserResponse[] = [];
   search = '';
+  page = 1;
+  pageSize = 10;
 
   form: CreateUserRequest = this.emptyForm();
   editing = false;
@@ -32,11 +38,17 @@ export class UserList implements OnInit {
 
   load() {
     this.userService.getUsers()
-      .subscribe(data => this.users = data);
+      .subscribe({
+        next: data => this.users = data,
+        error: err => this.alertService.error('Error al cargar usuarios', err?.error?.message)
+      });
   }
 
   save() {
-    if (!this.form.name || !this.form.email) return;
+    if (!this.form.name || !this.form.email) {
+      this.alertService.warning('Campos requeridos', 'Por favor ingresa nombre y correo electrónico.');
+      return;
+    }
 
     if (this.editing && this.selectedId) {
       const payload: UpdateUserRequest = {
@@ -44,16 +56,27 @@ export class UserList implements OnInit {
         password: this.form.password || undefined
       };
       this.userService.updateUser(this.selectedId, payload)
-        .subscribe(() => {
-          this.resetForm();
-          this.load();
+        .subscribe({
+          next: () => {
+            this.alertService.success('Usuario actualizado');
+            this.resetForm();
+            this.load();
+          },
+          error: err => this.alertService.error('Error al actualizar', err?.error?.message)
         });
     } else {
-      if (!this.form.password) return;
+      if (!this.form.password) {
+        this.alertService.warning('Campo requerido', 'La contraseña es obligatoria para un nuevo usuario.');
+        return;
+      }
       this.userService.createUser(this.form)
-        .subscribe(() => {
-          this.resetForm();
-          this.load();
+        .subscribe({
+          next: () => {
+            this.alertService.success('Usuario creado');
+            this.resetForm();
+            this.load();
+          },
+          error: err => this.alertService.error('Error al crear usuario', err?.error?.message)
         });
     }
   }
@@ -71,7 +94,13 @@ export class UserList implements OnInit {
 
   toggleActive(id: string) {
     this.userService.toggleActive(id)
-      .subscribe(() => this.load());
+      .subscribe({
+        next: () => {
+          this.alertService.success('Estado actualizado');
+          this.load();
+        },
+        error: err => this.alertService.error('Error al actualizar estado', err?.error?.message)
+      });
   }
 
   resetForm() {
@@ -80,13 +109,6 @@ export class UserList implements OnInit {
     this.selectedId = undefined;
   }
 
-  get filteredUsers() {
-    if (!this.search) return this.users;
-    const term = this.search.toLowerCase();
-    return this.users.filter(u =>
-      u.name.toLowerCase().includes(term) ||
-      u.email.toLowerCase().includes(term)
-    );
-  }
+
 
 }

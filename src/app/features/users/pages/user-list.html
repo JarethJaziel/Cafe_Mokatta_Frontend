@@ -53,7 +53,7 @@
               </tr>
             </thead>
             <tbody>
-              @for (u of filteredUsers; track u.id) {
+              @for (u of users | search: search : ['name', 'email'] | paginate: { itemsPerPage: pageSize, currentPage: page }; track u.id) {
               <tr [class.table-secondary]="!u.active">
                 <td>
                   <div class="d-flex align-items-center gap-2">
@@ -86,8 +86,16 @@
                 </td>
               </tr>
               }
+              @if ((users | search: search : ['name', 'email']).length === 0) {
+                <tr>
+                  <td colspan="5" class="text-center text-muted py-4">No matching users found.</td>
+                </tr>
+              }
             </tbody>
           </table>
+          <div class="d-flex justify-content-end mt-3">
+            <pagination-controls (pageChange)="page = $event" previousLabel="Ant" nextLabel="Sig"></pagination-controls>
+          </div>
         </div>
       </div>
     </div>
@@ -102,13 +110,19 @@
 
           <div class="mb-3">
             <label class="form-label fw-semibold field-label">Full Name</label>
-            <input class="form-control rounded-3" placeholder="e.g., John Doe" [(ngModel)]="form.name">
+            <input class="form-control rounded-3" placeholder="e.g., John Doe" [(ngModel)]="form.name" [ngClass]="{'is-invalid': !form.name && (form.name !== '' || editing)}">
+            @if(!form.name && (form.name !== '' || editing)) {
+              <div class="invalid-feedback">Name is required.</div>
+            }
           </div>
 
           <div class="mb-3">
             <label class="form-label fw-semibold field-label">Email</label>
             <input type="email" class="form-control rounded-3" placeholder="john@mokatta.com"
-              [(ngModel)]="form.email" [disabled]="editing">
+              [(ngModel)]="form.email" [disabled]="editing" [ngClass]="{'is-invalid': !form.email && (form.email !== '' || editing)}">
+            @if(!form.email && (form.email !== '' || editing)) {
+              <div class="invalid-feedback">Email is required.</div>
+            }
           </div>
 
           <div class="mb-4">
@@ -116,7 +130,10 @@
               {{ editing ? 'New Password (leave blank to keep)' : 'Password' }}
             </label>
             <input type="password" class="form-control rounded-3" placeholder="Min. 6 characters"
-              [(ngModel)]="form.password">
+              [(ngModel)]="form.password" [ngClass]="{'is-invalid': !form.password && !editing && form.password !== ''}">
+            @if(!form.password && !editing && form.password !== '') {
+              <div class="invalid-feedback">Password is required for new users.</div>
+            }
           </div>
 
           <button class="btn btn-primary w-100 py-3 rounded-3 fw-semibold shadow-sm quick-btn mb-2" (click)="save()">

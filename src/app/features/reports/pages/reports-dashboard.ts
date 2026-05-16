@@ -11,6 +11,7 @@ import {
   PeakHourDTO,
   CountSeriesDTO
 } from '../../../core/models/Dashboard.model';
+import { AlertService } from '../../../core/services/alert.service';
 
 @Component({
   selector: 'app-reports-dashboard',
@@ -22,6 +23,7 @@ import {
 export class ReportsDashboard implements OnInit {
 
   private readonly reportService = inject(ReportService);
+  private readonly alertService = inject(AlertService);
 
   // Data
   today?: TodayDashboardDTO;
@@ -50,26 +52,47 @@ export class ReportsDashboard implements OnInit {
 
   loadAll() {
     this.reportService.getTodayDashboard()
-      .subscribe(data => this.today = data);
+      .subscribe({
+        next: data => this.today = data,
+        error: err => this.alertService.error('Error', err?.error?.message || 'Error loading dashboard data')
+      });
 
     this.reportService.getSalesSeries(this.dateFrom, this.dateTo)
-      .subscribe(data => this.salesSeries = data);
+      .subscribe({
+        next: data => this.salesSeries = data,
+        error: err => this.alertService.error('Error', err?.error?.message || 'Error loading sales series')
+      });
 
     this.reportService.getOrdersCountSeries(this.dateFrom, this.dateTo)
-      .subscribe(data => this.ordersCounts = data);
+      .subscribe({
+        next: data => this.ordersCounts = data,
+        error: err => this.alertService.error('Error', err?.error?.message || 'Error loading order counts')
+      });
 
     this.reportService.getTopProducts(this.dateFrom, this.dateTo, 10)
-      .subscribe(data => this.topProducts = data);
+      .subscribe({
+        next: data => this.topProducts = data,
+        error: err => this.alertService.error('Error', err?.error?.message || 'Error loading top products')
+      });
 
     this.reportService.getRevenueByCategory(this.dateFrom, this.dateTo)
-      .subscribe(data => this.categoryRevenue = data);
+      .subscribe({
+        next: data => this.categoryRevenue = data,
+        error: err => this.alertService.error('Error', err?.error?.message || 'Error loading category revenue')
+      });
 
     this.reportService.getPaymentMethodSplit(this.dateFrom, this.dateTo)
-      .subscribe(data => this.paymentSplit = data);
+      .subscribe({
+        next: data => this.paymentSplit = data,
+        error: err => this.alertService.error('Error', err?.error?.message || 'Error loading payment split')
+      });
 
     const todayStr = new Date().toISOString().split('T')[0];
     this.reportService.getPeakHours(todayStr)
-      .subscribe(data => this.peakHours = data);
+      .subscribe({
+        next: data => this.peakHours = data,
+        error: err => this.alertService.error('Error', err?.error?.message || 'Error loading peak hours')
+      });
   }
 
   onDateChange() {

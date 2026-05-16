@@ -27,17 +27,14 @@
           </div>
         </div>
 
-        <!-- Error Message -->
-        <div *ngIf="errorMessage()" class="alert alert-danger p-2 text-center" role="alert">
-          {{ errorMessage() }}
-        </div>
 
         <!-- Submit Button -->
         <div class="d-grid">
           <button type="submit" class="btn btn-primary py-2" [disabled]="isLoading()">
-            <span *ngIf="isLoading()" class="spinner-border spinner-border-sm me-2" role="status"
-              aria-hidden="true"></span>
-            {{ isLoading() ? 'Loggin in...' : 'Login' }}
+            @if (isLoading()) {
+              <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            }
+            {{ isLoading() ? 'Logging in...' : 'Login' }}
           </button>
         </div>
       </form>

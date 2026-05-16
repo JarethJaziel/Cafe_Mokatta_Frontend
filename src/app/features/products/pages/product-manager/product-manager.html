@@ -33,7 +33,7 @@
 
           </div>
 
-          <input class="form-control rounded-3 mb-3 border-0 bg-light" placeholder="Search product...">
+          <input class="form-control rounded-3 mb-3 border-0 bg-light" placeholder="Search product..." [(ngModel)]="search">
 
           <table class="table table-hover align-middle mb-0">
             <thead class="table-light">
@@ -48,7 +48,7 @@
               </tr>
             </thead>
             <tbody>
-              @for (p of products; track p.id) {
+              @for (p of products | search: search : ['name', 'categoryName']; track p.id) {
               <tr [class.table-secondary]="!p.active">
                 <td>
                   <img [src]="p.imageUrl || 'https://placehold.co/50x50?text=No+Img'" class="rounded-2 product-thumb">
@@ -77,6 +77,11 @@
                   </button>
                 </td>
               </tr>
+              }
+              @if ((products | search: search : ['name', 'categoryName']).length === 0) {
+                <tr>
+                  <td colspan="7" class="text-center text-muted py-4">No matching products found.</td>
+                </tr>
               }
             </tbody>
           </table>
@@ -112,15 +117,7 @@
     <div class="col-lg-4">
       <div class="card border-0 shadow-sm rounded-3">
         <div class="card-body p-4">
-          @if(errorMessage) {
 
-          <div class="alert alert-danger rounded-3">
-
-            {{ errorMessage }}
-
-          </div>
-
-          }
           <h6 class="fw-bold text-dark mb-4">
             {{ editing ? 'Edit Product' : 'Add Product' }}
           </h6>
@@ -129,12 +126,12 @@
           <input type="file" #fileInput (change)="onFileSelected($event)" accept="image/*" style="display: none">
           <div class="image-upload-zone rounded-3 d-flex flex-column align-items-center justify-content-center mb-4"
             (click)="fileInput.click()">
-            <img *ngIf="imagePreview" [src]="imagePreview" class="img-fluid rounded-3"
-              style="max-height: 100px; object-fit: cover;">
-            <ng-container *ngIf="!imagePreview">
+            @if (imagePreview) {
+              <img [src]="imagePreview" class="img-fluid rounded-3" style="max-height: 100px; object-fit: cover;">
+            } @else {
               <i class="bi bi-cloud-arrow-up fs-2 text-muted mb-1"></i>
               <small class="text-muted fw-semibold">Upload Image</small>
-            </ng-container>
+            }
           </div>
 
           <!-- Image URL (fallback) -->
@@ -146,7 +143,10 @@
           <!-- Name -->
           <div class="mb-3">
             <label class="form-label fw-semibold text-dark field-label">Name</label>
-            <input class="form-control rounded-3" placeholder="e.g. Café Americano" [(ngModel)]="form.name">
+            <input class="form-control rounded-3" placeholder="e.g. Café Americano" [(ngModel)]="form.name" [ngClass]="{'is-invalid': !form.name && (form.name !== '' || editing)}">
+            @if(!form.name && (form.name !== '' || editing)) {
+              <div class="invalid-feedback">Name is required.</div>
+            }
           </div>
 
           <!-- Description -->
@@ -159,12 +159,15 @@
           <!-- Category -->
           <div class="mb-3">
             <label class="form-label fw-semibold text-dark field-label">Category</label>
-            <select class="form-select rounded-3" [(ngModel)]="form.categoryId">
+            <select class="form-select rounded-3" [(ngModel)]="form.categoryId" [ngClass]="{'is-invalid': !form.categoryId && editing}">
               <option value="" disabled>Select category</option>
               @for (cat of categoriesList; track cat.id) {
               <option [value]="cat.id">{{ cat.name }}</option>
               }
             </select>
+            @if(!form.categoryId && editing) {
+              <div class="invalid-feedback">Category is required.</div>
+            }
           </div>
 
           <!-- Price -->
@@ -173,7 +176,10 @@
             <div class="input-group">
               <span class="input-group-text bg-light border-end-0 rounded-start-3">$</span>
               <input type="number" class="form-control border-start-0 rounded-end-3" placeholder="0.00"
-                [(ngModel)]="form.price">
+                [(ngModel)]="form.price" [ngClass]="{'is-invalid': form.price <= 0 && editing}">
+              @if(form.price <= 0 && editing) {
+                <div class="invalid-feedback">Price must be greater than 0.</div>
+              }
             </div>
           </div>
 

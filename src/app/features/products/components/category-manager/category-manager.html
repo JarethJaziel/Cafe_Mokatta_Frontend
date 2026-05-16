@@ -18,15 +18,7 @@
 
         </div>
 
-        @if(errorMessage) {
 
-        <div class="alert alert-danger rounded-3">
-
-            {{ errorMessage }}
-
-        </div>
-
-        }
 
         <div class="mb-3">
 
@@ -36,7 +28,10 @@
 
             </label>
 
-            <input type="text" class="form-control rounded-3" placeholder="e.g. Coffee" [(ngModel)]="form.name">
+            <input type="text" class="form-control rounded-3" placeholder="e.g. Coffee" [(ngModel)]="form.name" [ngClass]="{'is-invalid': !form.name}">
+            @if(!form.name) {
+              <div class="invalid-feedback">Name is required.</div>
+            }
 
         </div>
 

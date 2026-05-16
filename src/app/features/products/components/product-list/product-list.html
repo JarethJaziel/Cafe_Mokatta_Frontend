@@ -19,9 +19,12 @@
 
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h6 class="fw-bold text-uppercase text-muted mb-0 metric-label">Product List</h6>
-            <button class="btn btn-primary btn-sm rounded-3 fw-semibold px-3 quick-btn">
-              <i class="bi bi-plus-lg me-1"></i> Add Category
-            </button>
+            <div class="d-flex gap-2">
+              <input class="form-control rounded-3 border-0 bg-light" placeholder="Search product..." [(ngModel)]="search" style="min-width: 200px;">
+              <button class="btn btn-primary btn-sm rounded-3 fw-semibold px-3 quick-btn">
+                <i class="bi bi-plus-lg me-1"></i> Add Category
+              </button>
+            </div>
           </div>
 
           <table class="table table-hover align-middle mb-0">
@@ -36,7 +39,7 @@
               </tr>
             </thead>
             <tbody>
-              @for (product of products; track product.id) {
+              @for (product of products | search: search : ['name', 'categoryName'] | paginate: { itemsPerPage: pageSize, currentPage: page }; track product.id) {
               <tr>
                 <td>
                   <img [src]="product.imageUrl || 'https://placehold.co/50x50?text=No+Img'" alt="{{ product.name }}"
@@ -71,30 +74,17 @@
                 </td>
               </tr>
               }
+              @if ((products | search: search : ['name', 'categoryName']).length === 0) {
+                <tr>
+                  <td colspan="6" class="text-center text-muted py-4">No matching products found.</td>
+                </tr>
+              }
             </tbody>
           </table>
 
           <!-- Pagination -->
-          <div class="d-flex justify-content-center mt-3">
-            <nav>
-              <ul class="pagination pagination-sm mb-0">
-                <li class="page-item disabled">
-                  <span class="page-link rounded-start-3"><i class="bi bi-chevron-double-left"></i></span>
-                </li>
-                <li class="page-item disabled">
-                  <span class="page-link"><i class="bi bi-chevron-left"></i></span>
-                </li>
-                <li class="page-item active">
-                  <span class="page-link">1</span>
-                </li>
-                <li class="page-item">
-                  <a class="page-link" href="#">2</a>
-                </li>
-                <li class="page-item">
-                  <a class="page-link rounded-end-3"><i class="bi bi-chevron-double-right"></i></a>
-                </li>
-              </ul>
-            </nav>
+          <div class="d-flex justify-content-end mt-3">
+            <pagination-controls (pageChange)="page = $event" previousLabel="Ant" nextLabel="Sig"></pagination-controls>
           </div>
 
         </div>

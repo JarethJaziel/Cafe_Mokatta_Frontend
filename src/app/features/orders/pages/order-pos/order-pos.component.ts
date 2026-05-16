@@ -3,23 +3,33 @@ import { CartItem, CreateOrderRequest, OrderItemRequest } from '../../../../core
 import { ProductResponse } from '../../../../core/models/Product.model';
 import { ProductService } from '../../../products/services/product.service';
 import { PosService } from '../../services/pos.service';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { SearchPipe } from '../../../../shared/pipes/search.pipe';
+import { AlertService } from '../../../../core/services/alert.service';
 
 @Component({
   selector: 'app-order-pos',
-  imports: [],
+  imports: [FormsModule, CommonModule, SearchPipe],
   templateUrl: './order-pos.html',
   styleUrl: './order-pos.css',
 })
 export class OrderPos {
   private productService = inject(ProductService);
   private posService = inject(PosService);
+  private alertService = inject(AlertService);
+
+  search = '';
 
   products: ProductResponse[] = [];
   cart: CartItem[] = [];
 
   ngOnInit() {
     this.productService.getProducts()
-      .subscribe(data => this.products = data);
+      .subscribe({
+        next: data => this.products = data,
+        error: err => this.alertService.error('Error al cargar menú', err?.error?.message)
+      });
   }
 
   // ================= ADD =================
@@ -74,7 +84,13 @@ export class OrderPos {
     };
 
     this.posService.createOrder(request)
-      .subscribe(() => this.clearCart());
+      .subscribe({
+        next: () => {
+          this.alertService.success('Orden creada', `Pago realizado con ${method}`);
+          this.clearCart();
+        },
+        error: err => this.alertService.error('Error al procesar pago', err?.error?.message)
+      });
   }
 
   clearCart() {
