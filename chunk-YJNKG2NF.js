@@ -1,1 +1,0 @@
-import{Ea as a}from"./chunk-XDTCDQ6K.js";var o=class n{transform(r,e,s=["name"]){if(!r||!e)return r;let f=e.toLowerCase();return r.filter(t=>s.some(i=>t[i]?t[i].toString().toLowerCase().includes(f):!1))}static \u0275fac=function(e){return new(e||n)};static \u0275pipe=a({name:"search",type:n,pure:!0})};export{o as a};
