@@ -7,7 +7,7 @@ import { inject, Injectable } from '@angular/core';
 export class MokkatAPIService {
 
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = 'https://mokattapi-m75p.onrender.com';
+  private readonly baseUrl = 'https://mokattapi-m75p.onrender.com/api';
 
   get<T>(endpoint: string, params?: Record<string, string>) {
     let httpParams = new HttpParams();
