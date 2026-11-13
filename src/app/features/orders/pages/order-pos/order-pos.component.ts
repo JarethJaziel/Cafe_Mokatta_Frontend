@@ -115,7 +115,7 @@ export class OrderPos {
   }
 
   getQrUrl(orderId: string): string {
-    const ticketUrl = `https://mokattapi.onrender.com/api/tickets/${orderId}/pdf`;
+    const ticketUrl = `https://mokattapi-production.up.railway.app/api/tickets/${orderId}/pdf`;
     const logo = encodeURIComponent('https://www.pngarts.com/files/1/Coffee-PNG-Pic.png');
 
     return `
