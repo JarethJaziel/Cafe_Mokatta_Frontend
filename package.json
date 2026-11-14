@@ -5,8 +5,14 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:ghpages": "ng build --configuration production --base-href /Cafe_Mokatta_Frontend/ && node scripts/copy-spa-routes.mjs",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "lhci:collect": "lhci collect --config=./lighthouserc.cjs",
+    "lhci:assert": "lhci assert --config=./lighthouserc.cjs",
+    "lhci:upload": "lhci upload --config=./lighthouserc.cjs",
+    "lhci:autorun": "npm run build && lhci autorun --config=./lighthouserc.cjs",
+    "lhci:ghpages": "lighthouse https://jarethjaziel.github.io/Cafe_Mokatta_Frontend/ --preset=desktop --only-categories=performance,accessibility,best-practices --output=html --output=json --output-path=../evidencias/lhci-reports/ghpages-report"
   },
   "prettier": {
     "printWidth": 100,
@@ -41,7 +47,9 @@
     "@angular/build": "^21.1.2",
     "@angular/cli": "^21.1.2",
     "@angular/compiler-cli": "^21.1.0",
+    "@lhci/cli": "^0.16.1",
     "jsdom": "^27.1.0",
+    "lighthouse": "^13.6.0",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"
   }
